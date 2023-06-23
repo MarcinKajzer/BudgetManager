@@ -1,0 +1,71 @@
+<!-- <div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-danger">
+            <tr>
+                <th></th>
+                <th *ngFor="let day of days">{{day}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cat of categories" [ngClass]="cat.isSubcategory ? '' : 'table-secondary fw-bold'">
+                <td class="pt-0 pb-0">{{cat.name}}</td>
+                <td *ngFor="let day of days" class="p-0" (click)="showExpensesPopup($event)"> -->
+<!-- <input *ngIf="cat.isSubcategory" type="number" class="border-none" style="width: 100%; min-width: 70px;" (blur)="saveValue($event)"> -->
+<!-- </td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
+
+<!-- Kwota jest wymagana i na blur inputa ma się zapisać. Jeśli nie zostanie dodana nic się nie dzieje - nawet jeśli został uzupełniony komentarz. Jeśli wpis był wcześniej i zostanie usunięta kwota - invalid. -->
+
+
+
+<div id="custom-popover">
+    <div>
+        <div *ngFor="let exp of selectedCategoryDay?.expenses; let i = index" class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateExpense($event, exp.id)">
+            <span class="input-group-text">PLN</span>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateComment($event, exp.id)"></textarea>
+            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addExpense($event)" [(ngModel)]="newExpenseAmount">
+            <span class="input-group-text">PLN</span>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newExpenseComment"></textarea>
+            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
+        </div>
+        <div class="input-group mb-3" *ngIf="newExpenseAmount?.length > 0">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username">
+            <span class="input-group-text">PLN</span>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server"></textarea>
+            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
+        </div>
+    </div>
+</div>
+
+
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="table-danger">
+            <tr>
+                <th></th>
+                <th *ngFor="let day of days">{{day}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let category of data">
+                <tr class='table-secondary fw-bold'>
+                    <td class="pt-0 pb-0">{{category.name}}</td>
+                    <td *ngFor="let day of days" class="p-0"></td>
+                </tr>
+                <tr *ngFor="let subcategory of category.subcategories">
+                    <td class="pt-0 pb-0">{{subcategory.name}}</td>
+                    <td *ngFor="let day of days" class="p-0 category-day" (click)="showExpensesPopup($event, category.id, subcategory.id, day)">
+                        <p *ngIf="getSubcategoryDay(category.id, subcategory.id, day); let x">{{x.amount}}</p>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</div>

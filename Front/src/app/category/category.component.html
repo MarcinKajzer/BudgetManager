@@ -1,0 +1,40 @@
+<div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse-element-' + category!.id" aria-expanded="true">
+        {{category!.name}}
+      </button>
+    </h2>
+    <div id="collapse-element-{{category!.id}}" class="accordion-collapse collapse show" style="transition: all .2s">
+      <div class="accordion-body">
+          <table class="table">
+              <tbody>
+                <tr *ngFor="let subcategory of category!.subcategories; let i = index">
+                    <td>
+                        <input type="text" class="form-control" *ngIf="subcategory.id == editedSubcategoryId" [(ngModel)]="editedSubcategoryNewName">
+                        <span *ngIf="subcategory.id != editedSubcategoryId">{{subcategory.name}}</span>
+                    </td>
+                    <td class="text-end">
+                        <button type="button" class="btn btn-sm btn-warning me-2" *ngIf="subcategory.id != editedSubcategoryId" (click)="setEditedSubcategoryId(i)"><i class="bi bi-pencil-square"></i></button>
+                        <button type="button" class="btn btn-sm btn-success me-2" *ngIf="subcategory.id == editedSubcategoryId" (click)="editSubcategoryName(i)"><i class="bi bi-check-lg"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger me-2" *ngIf="subcategory.id == editedSubcategoryId" (click)="setEditedSubcategoryId()"><i class="bi bi-x"></i></button>
+                        <button type="button" class="btn btn-sm btn-danger" (click)="deleteSubcategory(i)"><i class="bi bi-trash3" ></i></button>
+                    </td>
+                </tr>
+              </tbody>
+          </table>
+
+          <div class="input-group mb-3" *ngIf="displayAddNewSubcategoryForm; else addSubcategoryBtn">
+              <input type="text" class="form-control" placeholder="Subcategory name" aria-label="Subcategory name" [(ngModel)]="newSubcategoryName">
+              <button class="btn btn-success" type="button" (click)="addSubcategory()"><i class="bi bi-check-lg"></i></button>
+              <button class="btn btn-danger" type="button" (click)="closeAddSubcategoryForm()"><i class="bi bi-x"></i></button>
+          </div>
+
+          <ng-template #addSubcategoryBtn>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-success" (click)="displayAddSubcategoryForm()"><i class="bi bi-plus"></i>Add subcategory</button>
+            </div>
+          </ng-template>
+          
+      </div>
+    </div>
+</div>
