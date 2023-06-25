@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\BudgetManager.Application\BudgetManager.Application.csproj" />
   </ItemGroup>
 
 </Project>
