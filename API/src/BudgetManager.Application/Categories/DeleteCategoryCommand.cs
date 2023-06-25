@@ -1,15 +1,24 @@
-﻿using Mediator;
+﻿using BudgetManager.Application.Interfaces;
+using Mediator;
 
 namespace BudgetManager.Application.Categories
 {
-    public record DeleteCategoryCommand(Guid id) : IRequest<Unit>;
+    public record DeleteCategoryCommand(Guid Id) : IRequest<bool>;
 
-    public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Unit>
+    public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, bool>
     {
-        public ValueTask<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+        private readonly ICategoryRepository _repository;
+
+        public DeleteCategoryHandler(ICategoryRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public ValueTask<bool> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
             //Polityka usuwania - jeśli dana kategoria ma już zapisane wydatki - soft delete, usunięcie z listy, nie pokazywanie w nowych misiącach
-            throw new NotImplementedException();
+
+            return new ValueTask<bool>(_repository.Delete(request.Id));
         }
     }
 }

@@ -1,14 +1,22 @@
-﻿using Mediator;
+﻿using BudgetManager.Application.Interfaces;
+using Mediator;
 
 namespace BudgetManager.Application.Categories
 {
-    public record EditCategoryQuery(Guid id, string Name) : IRequest<Unit>;
+    public record EditCategoryQuery(Guid Id, string Name) : IRequest<bool>;
 
-    public class EditCategoryHandler : IRequestHandler<EditCategoryQuery, Unit>
+    public class EditCategoryHandler : IRequestHandler<EditCategoryQuery, bool>
     {
-        public ValueTask<Unit> Handle(EditCategoryQuery request, CancellationToken cancellationToken)
+        private readonly ICategoryRepository _repository;
+
+        public EditCategoryHandler(ICategoryRepository repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;
+        }
+
+        public ValueTask<bool> Handle(EditCategoryQuery request, CancellationToken cancellationToken)
+        {
+            return new ValueTask<bool>(_repository.Update(request.Id, request.Name));
         }
     }
 }

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BudgetManager.Application\BudgetManager.Application.csproj" />
+    <ProjectReference Include="..\BudgetManager.Infrastructure\BudgetManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
