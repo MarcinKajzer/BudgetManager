@@ -5,49 +5,35 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private static List<Category> _categories = new List<Category>
-        {
-            new Category { Name = "Dom", Id = Guid.NewGuid() },
-            new Category { Name = "Zdrowie", Id = Guid.NewGuid() },
-            new Category { Name = "Transport", Id = Guid.NewGuid() },
-            new Category { Name = "Rozwój osobisty", Id = Guid.NewGuid() }
-        };
-
         public void Add(Category category)
         {
-            _categories.Add(category);
+            InMemoryStorage.categories.Add(category);
         }
 
         public Category? Get(Guid id)
         {
-            return _categories.FirstOrDefault(c => c.Id == id);
+            return InMemoryStorage.categories.FirstOrDefault(c => c.Id == id);
         }
 
-        public IEnumerable<Category> GetAll() => _categories;
+        public IEnumerable<Category> GetAll() => InMemoryStorage.categories;
 
-        public bool Update(Guid id, string name)
+        public bool Update(Category category)
         {
-            var cat = _categories.FirstOrDefault(c => c.Id == id);
-
-            if (cat is null)
-            {
-                return false;
-            }
-
-            cat.Name = name;
+            //Polityka 
+            //Bez implementacji, bo na razie update w pamięci
             return true;
         }
 
         public bool Delete(Guid id)
         {
-            var cat = _categories.FirstOrDefault(c => c.Id == id);
+            var cat = InMemoryStorage.categories.FirstOrDefault(c => c.Id == id);
 
             if (cat is null)
             {
                 return false;
             }
 
-            _categories.Remove(cat);
+            InMemoryStorage.categories.Remove(cat);
             return true;
         }
     }

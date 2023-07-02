@@ -1,4 +1,5 @@
-﻿using BudgetManager.Application.Categories;
+﻿using BudgetManager.Application.Categories.Commands;
+using BudgetManager.Application.Categories.Queries;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,8 @@ namespace BudgetManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody]AddCategoryCommand command, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(command, cancellationToken));
+            var id = await _mediator.Send(command, cancellationToken);
+            return CreatedAtAction(nameof(Get), new { id }, null);
         }
 
         [HttpGet("id")]
@@ -23,16 +25,15 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetALl(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
             return Ok(await _mediator.Send(new GetAllCategoriesQuery(), cancellationToken));
-
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Edit(Guid id, [FromBody]EditCategoryQuery query, CancellationToken cancellationToken)
+        [HttpPut("id")]
+        public async Task<IActionResult> Edit(Guid id, [FromBody]EditCategoryCommand command, CancellationToken cancellationToken)
         {
-            await _mediator.Send(query, cancellationToken);
+            await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();
         }
 

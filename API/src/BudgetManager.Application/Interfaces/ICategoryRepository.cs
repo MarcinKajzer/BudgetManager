@@ -7,7 +7,7 @@ namespace BudgetManager.Application.Interfaces
         void Add(Category category);
         Category? Get(Guid id);
         IEnumerable<Category> GetAll();
-        bool Update(Guid id, string name);
+        bool Update(Category category);
         bool Delete(Guid id);
     }
 }

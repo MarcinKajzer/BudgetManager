@@ -9,7 +9,8 @@ namespace BudgetManager.Infrastructure
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddSingleton<ICategoryRepository, CategoryRepository>();
-            
+            services.AddSingleton<ISubcategoryRepository, SubcategoryRepository>();
+
             return services;
         }
     }

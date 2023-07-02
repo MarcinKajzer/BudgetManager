@@ -2,7 +2,7 @@
 using BudgetManager.Domain.Categories;
 using Mediator;
 
-namespace BudgetManager.Application.Categories
+namespace BudgetManager.Application.Categories.Queries
 {
     public record GetAllCategoriesQuery : IRequest<IEnumerable<GetAllCategoriesResult>>;
 

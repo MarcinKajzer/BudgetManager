@@ -1,8 +1,9 @@
-﻿using BudgetManager.Application.Interfaces;
+﻿using BudgetManager.Application.Exceptions;
+using BudgetManager.Application.Interfaces;
 using BudgetManager.Domain.Categories;
 using Mediator;
 
-namespace BudgetManager.Application.Categories
+namespace BudgetManager.Application.Categories.Queries
 {
     public record GetCategoryQuery(Guid id) : IRequest<GetCategoryResult>;
 
@@ -28,7 +29,7 @@ namespace BudgetManager.Application.Categories
         }
         public ValueTask<GetCategoryResult> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
         {
-            var category = _repository.Get(request.id) ?? throw new Exception(); // custom not found exception;
+            var category = _repository.Get(request.id) ?? throw new NotFoundException(); 
             return new ValueTask<GetCategoryResult>(new GetCategoryResult(category.Id, category.Name, category.Subcategories));
         }
     }
