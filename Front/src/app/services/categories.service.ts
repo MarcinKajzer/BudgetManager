@@ -24,7 +24,7 @@ export class CategoriesService {
         this.httpClient.get<Category[]>(`${this.apiUrl}/category`).subscribe(categories => this.categories$.next(categories));
     }
 
-    //Podejście z pobieraniem wszystkich kategorii za każdym razem (proste i powtarzalne rozwiązanie)
+    //Podejście z pobieraniem wszystkich kategorii za każdym razem (proste i powtarzalne rozwiązanie), ale nie najlepsze (doładowywać tylko to co się zmieniło)
     addCategory(categoryName: string) {
         const payload = {
             name: categoryName
