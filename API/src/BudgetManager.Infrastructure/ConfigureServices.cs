@@ -10,6 +10,7 @@ namespace BudgetManager.Infrastructure
         {
             services.AddSingleton<ICategoryRepository, CategoryRepository>();
             services.AddSingleton<ISubcategoryRepository, SubcategoryRepository>();
+            services.AddSingleton<IExpenseRepository, ExpenseRepository>();
 
             return services;
         }
