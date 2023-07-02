@@ -1,7 +1,7 @@
 import { Subcategory } from "./subcategory";
 
 export interface Category {
-    id: number,
+    id: string,
     name: string,
     subcategories: Subcategory[];
     displayAddNewSubcategoryForm: boolean;

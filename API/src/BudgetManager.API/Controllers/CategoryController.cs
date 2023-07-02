@@ -18,7 +18,7 @@ namespace BudgetManager.API.Controllers
             return CreatedAtAction(nameof(Get), new { id }, null);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
         {
             return Ok(await _mediator.Send(new GetCategoryQuery(id), cancellationToken));
@@ -30,14 +30,14 @@ namespace BudgetManager.API.Controllers
             return Ok(await _mediator.Send(new GetAllCategoriesQuery(), cancellationToken));
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Edit(Guid id, [FromBody]EditCategoryCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
             await _mediator.Send(new DeleteCategoryCommand(id), cancellationToken);

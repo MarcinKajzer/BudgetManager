@@ -4,13 +4,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
-import { CategoriesComponent } from './categories/categories.component';
+import { CategoriesListComponent } from './categories/categoriesList.component';
 import { RouterModule } from '@angular/router';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoryComponent } from './category/category.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {HttpClientModule} from '@angular/common/http';
 
 const routes = [
   {
@@ -23,7 +24,7 @@ const routes = [
   },
   {
     path: 'categories', 
-    component: CategoriesComponent
+    component: CategoriesListComponent
   }
 ]
 
@@ -31,7 +32,7 @@ const routes = [
   declarations: [
     AppComponent,
     NavbarComponent,
-    CategoriesComponent,
+    CategoriesListComponent,
     ExpensesComponent,
     DashboardComponent,
     CategoryComponent
@@ -42,7 +43,8 @@ const routes = [
     RouterModule.forRoot(routes),
     FormsModule,
     NgbModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

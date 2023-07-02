@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Category } from '../models/category';
+import { CategoriesService } from '../services/categories.service';
 
 @Component({
   selector: 'app-category',
@@ -13,50 +14,66 @@ export class CategoryComponent {
   @Input() set Category(value: Category) {
     this.category = value;
   }
-  
+
+  showCategoryNameInput: boolean = false;
+  categoryNewName?: string;
   newSubcategoryName?: string;
-  editedSubcategoryId?: number;
+  editedSubcategoryId?: string;
   editedSubcategoryNewName?: string;
   displayAddNewSubcategoryForm: boolean = false;
 
-  addSubcategory() {
+  constructor(private categoryService: CategoriesService) { }
 
-    const subcategory = {
-      id: this.category!.subcategories.length,
-      name: this.newSubcategoryName!,
-      displayEditForm: false
-    }
-
-    this.category!.subcategories.push(subcategory);
-    this.newSubcategoryName = undefined;
+  showEditNameInput() {
+    this.categoryNewName = this.category?.name;
+    this.showCategoryNameInput = true;
   }
 
-  closeAddSubcategoryForm() {
-    this.displayAddNewSubcategoryForm = false;
+  hideEditNameInput() {
+    this.showCategoryNameInput = false;
+    this.categoryNewName = undefined;
+  }
+
+  editCategory() {
+    if (this.categoryNewName != undefined) {
+      this.categoryService.editCategory(this.category!.id, this.categoryNewName);
+    }
+  }
+
+  deleteCategory() {
+    this.categoryService.deleteCategory(this.category!.id);
   }
 
   displayAddSubcategoryForm() {
     this.displayAddNewSubcategoryForm = true;
   }
 
-  setEditedSubcategoryId(subcategoryIndex?: number) {
-    this.editedSubcategoryId = subcategoryIndex;
-    
-    if (subcategoryIndex != undefined) {
-      this.editedSubcategoryNewName = this.category!.subcategories[subcategoryIndex].name;
+  closeAddSubcategoryForm() {
+    this.displayAddNewSubcategoryForm = false;
+  }
+
+  addSubcategory() {
+    this.categoryService.addSubcategory(this.newSubcategoryName!, this.category!.id)
+    this.newSubcategoryName = undefined;
+  }
+
+  setEditedSubcategoryId(subcategoryId?: string) {
+    this.editedSubcategoryId = subcategoryId;
+    if (subcategoryId != undefined) {
+      this.editedSubcategoryNewName = this.category!.subcategories.find(s => s.id == subcategoryId)!.name;
     }
   }
 
-  editSubcategoryName(subcategoryIndex: number) {
+  editSubcategoryName(subcategoryId: string) {
     if (this.editedSubcategoryNewName != undefined) {
-      this.category!.subcategories[subcategoryIndex].name = this.editedSubcategoryNewName;
+      this.categoryService.editSubcategory(subcategoryId, this.editedSubcategoryNewName);
     }
-    
+
     this.editedSubcategoryNewName = undefined;
     this.editedSubcategoryId = undefined;
   }
 
-  deleteSubcategory(subcategoryIndex: number) {
-    this.category!.subcategories.splice(subcategoryIndex, 1);
+  deleteSubcategory(id: string) {
+    this.categoryService.deleteSubcategory(id);
   }
 }
