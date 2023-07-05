@@ -26,6 +26,8 @@ export class ExpensesComponent {
   savingExpensesId?: string;
 
   data?: Category[];
+  dailySummary?: number[];
+  totalSummary?: number;
 
   isExpensesListPopupVisible: boolean = false;
   expensesListPopupXOffset: number = 0;
@@ -52,14 +54,26 @@ export class ExpensesComponent {
   }
 
   prepareData(data: Category[]) {
+    this.dailySummary = Array(this.numberOfDays).fill(0);
+    this.totalSummary = 0;
+    
     for (const category of data){
+      category.dailyExpenses = Array(this.numberOfDays).fill(0);
       for (const subcategory of category.subcategories){
         subcategory.dailyExpenses = Array(this.numberOfDays).fill(0);
         for (const expense of subcategory.expenses) {
-          subcategory.dailyExpenses[new Date(expense.date).getDate()-1] += expense.amount;
+          const index = new Date(expense.date).getDate()-1
+          subcategory.dailyExpenses[index] += expense.amount;
+          category.dailyExpenses[index] += expense.amount;
+          this.dailySummary[index] += expense.amount; 
+          this.totalSummary += expense.amount;
         }
       }
     }
+  }
+
+  sum(arr: number[]) {
+    return arr.reduce((a, b) => a + b);
   }
 
   getCategory(categoryId: string) {
@@ -76,8 +90,6 @@ export class ExpensesComponent {
 
   showExpensesListPopup(event: any, categoryId: string, subcategoryId: string, day: number) {
     let expenses = this.getExpensesForDay(categoryId, subcategoryId, day);
-
-    console.log(expenses?.length);
 
     if (expenses!.length == 0) {
       this.isExpensesListPopupVisible = false;

@@ -4,5 +4,5 @@ export interface Category {
     id: string,
     name: string,
     subcategories: Subcategory[];
-    displayAddNewSubcategoryForm: boolean;
+    dailyExpenses: number[];
   }

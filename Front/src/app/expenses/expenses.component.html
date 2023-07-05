@@ -31,17 +31,23 @@
 
 <div class="table-responsive">
     <table class="table table-bordered">
-        <thead class="table-danger">
+        <thead class="table-dark">
             <tr>
-                <th></th>
+                <th>Category / day</th>
                 <th *ngFor="let day of days">{{day}}</th>
+                <th>SUM</th>
             </tr>
         </thead>
         <tbody>
             <ng-container *ngFor="let category of data">
                 <tr class='table-secondary fw-bold'>
-                    <td class="pt-0 pb-0">{{category.name + category.id}}</td>
-                    <td *ngFor="let day of days" class="p-0"></td>
+                    <td class="pt-0 pb-0">{{category.name}}</td>
+                    <td class="p-0" *ngFor="let dailyExpense of category.dailyExpenses">
+                        <ng-container *ngIf="dailyExpense > 0">
+                            {{dailyExpense}}
+                        </ng-container>
+                    </td>
+                    <td class="p-0">{{sum(category.dailyExpenses) > 0 ? sum(category.dailyExpenses) : ''}}</td>
                 </tr>
                 <tr *ngFor="let subcategory of category.subcategories">
                     <td class="pt-0 pb-0">{{subcategory.name}}</td>
@@ -50,8 +56,18 @@
                             {{dailyExpense}}
                         </ng-container>
                     </td>
+                    <td class="p-0 table-warning">{{sum(subcategory.dailyExpenses) > 0 ? sum(subcategory.dailyExpenses) : ''}}</td>
                 </tr>
             </ng-container>
+            <tr class="table-warning">
+                <th class="pt-0 pb-0">SUM</th>
+                <th class="p-0" *ngFor="let sum of dailySummary">
+                    <ng-container *ngIf="sum > 0">
+                        {{sum}}
+                    </ng-container>
+                </th>
+                <th class="p-0 table-danger">{{totalSummary}}</th>
+            </tr>
         </tbody>
     </table>
 </div>
