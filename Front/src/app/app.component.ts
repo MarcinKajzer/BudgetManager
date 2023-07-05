@@ -11,7 +11,7 @@ export class AppComponent {
 
   @HostListener('document:click', ['$event'])
   documentClick(event: any): void {
-    if (!event.target.classList.contains("category-day") && event.target.closest("#custom-popover") == null) {
+    if (event.target.closest('#expenses-list-popup') == null && !event.target.classList.contains("category-day") && event.target.closest("#edit-expenses-popup") == null) {
       this.utilitiesService.setIsExpensesPopoverVisible(false);
     }
 

@@ -85,4 +85,30 @@ export class CategoriesService {
             )
             .subscribe(categories => this.categories$.next(categories))
     }
+
+    addExpense(subcategoryId: string, amount: number, date: Date) {
+        const payload = {
+            subcategoryId,
+            date,
+            amount: +amount,
+            comment: ''
+        }
+        this.httpClient.post(`${this.apiUrl}/expenses/`, payload)
+            .pipe(
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+            )
+            .subscribe(categories => this.categories$.next(categories))
+    }
+
+    updateExpense(expenseId: string, amount: number, comment: string){
+        const payload = {
+            amount: +amount,
+            comment
+        }
+        this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload)
+            .pipe(
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+            )
+            .subscribe(categories => this.categories$.next(categories))
+    }
 }

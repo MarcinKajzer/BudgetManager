@@ -1,32 +1,17 @@
-<!-- <div class="table-responsive">
-    <table class="table table-bordered">
-        <thead class="table-danger">
-            <tr>
-                <th></th>
-                <th *ngFor="let day of days">{{day}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let cat of categories" [ngClass]="cat.isSubcategory ? '' : 'table-secondary fw-bold'">
-                <td class="pt-0 pb-0">{{cat.name}}</td>
-                <td *ngFor="let day of days" class="p-0" (click)="showExpensesPopup($event)"> -->
-<!-- <input *ngIf="cat.isSubcategory" type="number" class="border-none" style="width: 100%; min-width: 70px;" (blur)="saveValue($event)"> -->
-<!-- </td>
-            </tr>
-        </tbody>
-    </table>
-</div> -->
-
-<!-- Kwota jest wymagana i na blur inputa ma się zapisać. Jeśli nie zostanie dodana nic się nie dzieje - nawet jeśli został uzupełniony komentarz. Jeśli wpis był wcześniej i zostanie usunięta kwota - invalid. -->
-
-
-
-<div id="custom-popover">
+<div [ngClass]="!isExpensesListPopupVisible ? 'hidden' : ''" id="expenses-list-popup" [style]="'left:' + expensesListPopupXOffset + 'px; top:' + expensesListPopupYOffset + 'px'" (click)="showPopup()">
     <div>
-        <div *ngFor="let exp of selectedCategoryDay?.expenses; let i = index" class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateExpense($event, exp.id)">
+        <div *ngFor="let exp of selectedDayExpenses; let i = index">
+            <p>{{exp.amount}} PLN - {{exp.comment}} </p>
+        </div>
+    </div>
+</div>
+
+<div [ngClass]="!isEditExpensesPopupVisible ? 'hidden' : ''" id="edit-expenses-popup"  [style]="'left:' + editExpensesPopupXOffset + 'px; top:' + editExpensesPopupYOffset + 'px'" >
+    <div>
+        <div *ngFor="let exp of selectedDayExpenses; let i = index" class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateExpenseAmount($event, exp)">
             <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateComment($event, exp.id)"></textarea>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateExpenseComment($event, exp)"></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
         <div class="input-group mb-3">
@@ -44,7 +29,6 @@
     </div>
 </div>
 
-
 <div class="table-responsive">
     <table class="table table-bordered">
         <thead class="table-danger">
@@ -56,13 +40,15 @@
         <tbody>
             <ng-container *ngFor="let category of data">
                 <tr class='table-secondary fw-bold'>
-                    <td class="pt-0 pb-0">{{category.name}}</td>
+                    <td class="pt-0 pb-0">{{category.name + category.id}}</td>
                     <td *ngFor="let day of days" class="p-0"></td>
                 </tr>
                 <tr *ngFor="let subcategory of category.subcategories">
                     <td class="pt-0 pb-0">{{subcategory.name}}</td>
-                    <td *ngFor="let day of days" class="p-0 category-day" (click)="showExpensesPopup($event, category.id, subcategory.id, day)">
-                        <p *ngIf="getSubcategoryDay(category.id, subcategory.id, day); let x">{{x.amount}}</p>
+                    <td *ngFor="let dailyExpense of subcategory.dailyExpenses; let i = index" class="p-0 category-day" (click)="showEditExpensesPopup($event, category.id, subcategory.id, i+1)" (mouseover)="showExpensesListPopup($event, category.id, subcategory.id, i+1)">
+                        <ng-container *ngIf="dailyExpense > 0">
+                            {{dailyExpense}}
+                        </ng-container>
                     </td>
                 </tr>
             </ng-container>

@@ -6,9 +6,9 @@ namespace BudgetManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ExpensesControler : ApplicationControllerBase
+    public class ExpensesController : ApplicationControllerBase
     {
-        public ExpensesControler(IMediator mediator) : base(mediator)
+        public ExpensesController(IMediator mediator) : base(mediator)
         {
         }
 
