@@ -8,8 +8,8 @@ namespace BudgetManager.Application.Subcategories.Commands
 
     public class DeleteSubcategoryHandler : IRequestHandler<DeleteSubcategoryCommand, Unit>
     {
-        private readonly ISubcategoryRepository _repository;
-        public DeleteSubcategoryHandler(ISubcategoryRepository repository)
+        private readonly IExpenseSubcategoryRepository _repository;
+        public DeleteSubcategoryHandler(IExpenseSubcategoryRepository repository)
         {
             _repository = repository;
         }

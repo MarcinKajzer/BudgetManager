@@ -9,9 +9,9 @@ namespace BudgetManager.Application.Expenses.Commands
 
     public class AddExpnseHandler : IRequestHandler<AddExpenseCommand, Guid>
     {
-        private readonly ISubcategoryRepository _subcategoryRepository;
+        private readonly IExpenseSubcategoryRepository _subcategoryRepository;
         private readonly IExpenseRepository _expenseRepository;
-        public AddExpnseHandler(ISubcategoryRepository subcategoryRepository, IExpenseRepository expenseRepository)
+        public AddExpnseHandler(IExpenseSubcategoryRepository subcategoryRepository, IExpenseRepository expenseRepository)
         {
             _subcategoryRepository = subcategoryRepository;
             _expenseRepository = expenseRepository;

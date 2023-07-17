@@ -1,22 +1,24 @@
 ﻿using BudgetManager.Domain.Categories;
+using BudgetManager.Domain.EarningsCategories;
 using BudgetManager.Domain.Expenses;
+using BudgetManager.Domain.Incomes;
 
 namespace BudgetManager.Infrastructure.Persistence
 {
     internal class InMemoryStorage
     {
-        public static List<Category> categories = new List<Category>
+        public static List<ExpenseCategory> expenseCategories = new List<ExpenseCategory>
         {
-            new Category { Name = "Dom", Id = Guid.NewGuid() },
-            new Category { Name = "Zdrowie", Id = Guid.NewGuid() },
-            new Category { Name = "Transport", Id = Guid.NewGuid() },
-            new Category 
+            new ExpenseCategory { Name = "Dom", Id = Guid.NewGuid() },
+            new ExpenseCategory { Name = "Zdrowie", Id = Guid.NewGuid() },
+            new ExpenseCategory { Name = "Transport", Id = Guid.NewGuid() },
+            new ExpenseCategory 
             { 
                 Name = "Rozwój osobisty", 
                 Id = Guid.NewGuid(), 
-                Subcategories = new List<Subcategory>
+                Subcategories = new List<ExpenseSubcategory>
                 {
-                    new Subcategory
+                    new ExpenseSubcategory
                     {
                         Id = Guid.NewGuid(),
                         Name = "Książki",
@@ -31,6 +33,26 @@ namespace BudgetManager.Infrastructure.Persistence
                             }
                         }
                     }
+                }
+            }
+        };
+
+        public static List<IncomeCategory> incomeCategories = new List<IncomeCategory>
+        {
+            new IncomeCategory { Name = "Freelance", Id = Guid.NewGuid() },
+            new IncomeCategory
+            {
+                Name = "Praca UoP",
+                Id = Guid.NewGuid(),
+                Incomes = new List<Income>
+                {
+                   new Income
+                   {
+                        Id = Guid.NewGuid(),
+                        Amount = 6200.14m,
+                        Comment = "Wynagrodzenie za pracę",
+                        Date = DateTime.Now
+                   }
                 }
             }
         };

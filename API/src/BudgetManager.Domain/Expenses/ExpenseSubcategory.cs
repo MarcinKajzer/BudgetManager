@@ -2,7 +2,7 @@
 
 namespace BudgetManager.Domain.Categories
 {
-    public class Subcategory
+    public class ExpenseSubcategory
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

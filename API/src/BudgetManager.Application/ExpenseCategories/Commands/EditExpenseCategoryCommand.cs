@@ -4,18 +4,18 @@ using Mediator;
 
 namespace BudgetManager.Application.Categories.Commands
 {
-    public record EditCategoryCommand(Guid Id, string Name) : IRequest<bool>;
+    public record EditExpenseCategoryCommand(Guid Id, string Name) : IRequest<bool>;
 
-    public class EditCategoryHandler : IRequestHandler<EditCategoryCommand, bool>
+    public class EditExpenseCategoryHandler : IRequestHandler<EditExpenseCategoryCommand, bool>
     {
-        private readonly ICategoryRepository _repository;
+        private readonly IExpenseCategoryRepository _repository;
 
-        public EditCategoryHandler(ICategoryRepository repository)
+        public EditExpenseCategoryHandler(IExpenseCategoryRepository repository)
         {
             _repository = repository;
         }
 
-        public ValueTask<bool> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
+        public ValueTask<bool> Handle(EditExpenseCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = _repository.Get(request.Id) ?? throw new NotFoundException();
             category.Name = request.Name;

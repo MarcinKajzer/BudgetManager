@@ -8,10 +8,13 @@ namespace BudgetManager.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton<ICategoryRepository, CategoryRepository>();
-            services.AddSingleton<ISubcategoryRepository, SubcategoryRepository>();
+            services.AddSingleton<IExpenseCategoryRepository, ExpenseCategoryRepository>();
+            services.AddSingleton<IExpenseSubcategoryRepository, ExpenseSubcategoryRepository>();
             services.AddSingleton<IExpenseRepository, ExpenseRepository>();
 
+            services.AddSingleton<IIncomeRepository, IncomeRepository>();
+            services.AddSingleton<IIncomeCategoryRepository, IncomeCategoryRepository>();
+           
             return services;
         }
     }

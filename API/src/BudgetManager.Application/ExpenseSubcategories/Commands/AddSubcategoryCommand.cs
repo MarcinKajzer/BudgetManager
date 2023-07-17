@@ -9,9 +9,9 @@ namespace BudgetManager.Application.Subcategories.Commands
 
     public class AddSubcategoryHandler : IRequestHandler<AddSubcategoryCommand, Guid>
     {
-        private readonly ICategoryRepository _categoryRepository;
-        private readonly ISubcategoryRepository _subcategoryRepository;
-        public AddSubcategoryHandler(ICategoryRepository categoryRepository, ISubcategoryRepository repository)
+        private readonly IExpenseCategoryRepository _categoryRepository;
+        private readonly IExpenseSubcategoryRepository _subcategoryRepository;
+        public AddSubcategoryHandler(IExpenseCategoryRepository categoryRepository, IExpenseSubcategoryRepository repository)
         {
             _categoryRepository = categoryRepository;
             _subcategoryRepository = repository;
@@ -20,7 +20,7 @@ namespace BudgetManager.Application.Subcategories.Commands
         {
             var category = _categoryRepository.Get(request.CategoryId) ?? throw new NotFoundException();
 
-            var subcategory = new Subcategory
+            var subcategory = new ExpenseSubcategory
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,

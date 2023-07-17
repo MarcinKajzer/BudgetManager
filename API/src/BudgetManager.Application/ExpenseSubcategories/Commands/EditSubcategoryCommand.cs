@@ -8,9 +8,9 @@ namespace BudgetManager.Application.Subcategories.Commands
 
     public class EditSubcategoryHandler : IRequestHandler<EditSubcategoryCommand, Unit>
     {
-        private readonly ISubcategoryRepository _repository;
+        private readonly IExpenseSubcategoryRepository _repository;
 
-        public EditSubcategoryHandler(ISubcategoryRepository repository)
+        public EditSubcategoryHandler(IExpenseSubcategoryRepository repository)
         {
             _repository = repository;
         }
