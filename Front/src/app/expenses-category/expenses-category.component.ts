@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { Category } from '../models/category';
-import { CategoriesService } from '../services/categories.service';
+import { CategoriesService } from '../services/expense-categories.service';
 
 @Component({
   selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.scss']
+  templateUrl: './expenses-category.component.html',
+  styleUrls: ['./expenses-category.component.scss']
 })
-export class CategoryComponent {
+export class ExpensesCategoryComponent {
 
   protected category?: Category;
 

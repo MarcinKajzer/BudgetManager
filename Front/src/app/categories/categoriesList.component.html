@@ -1,9 +1,0 @@
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Category name" aria-label="Category name" [(ngModel)]="newCategoryName">
-    <button class="btn btn-success" type="button" (click)="addCategory()" [disabled]="!isNewCategoryNameValid()"><i class="bi bi-plus"></i>Add</button>
-</div>
-
-<div>
-    <app-category *ngFor="let category of categories" [Category]="category"></app-category>
-</div>
-

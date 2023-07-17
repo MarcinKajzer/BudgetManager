@@ -21,7 +21,7 @@ export class CategoriesService {
     }
 
     refreshCategory(): void {
-        this.httpClient.get<Category[]>(`${this.apiUrl}/category`).subscribe(categories => this.categories$.next(categories));
+        this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`).subscribe(categories => this.categories$.next(categories));
     }
 
     //Podejście z pobieraniem wszystkich kategorii za każdym razem (proste i powtarzalne rozwiązanie), ale nie najlepsze (doładowywać tylko to co się zmieniło)
@@ -31,7 +31,7 @@ export class CategoriesService {
         }
         this.httpClient.post(`${this.apiUrl}/category`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -42,7 +42,7 @@ export class CategoriesService {
         }
         this.httpClient.put(`${this.apiUrl}/category/${id}`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -50,7 +50,7 @@ export class CategoriesService {
     deleteCategory(id: string) {
         this.httpClient.delete(`${this.apiUrl}/category/${id}`)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -62,7 +62,7 @@ export class CategoriesService {
         }
         this.httpClient.post(`${this.apiUrl}/subcategory`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -73,7 +73,7 @@ export class CategoriesService {
         }
         this.httpClient.put(`${this.apiUrl}/subcategory/${id}`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -81,7 +81,7 @@ export class CategoriesService {
     deleteSubcategory(id: string) {
         this.httpClient.delete(`${this.apiUrl}/subcategory/${id}`)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -95,7 +95,7 @@ export class CategoriesService {
         }
         this.httpClient.post(`${this.apiUrl}/expenses/`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }
@@ -107,7 +107,7 @@ export class CategoriesService {
         }
         this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload)
             .pipe(
-                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/category`))
+                concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseCategory`))
             )
             .subscribe(categories => this.categories$.next(categories))
     }

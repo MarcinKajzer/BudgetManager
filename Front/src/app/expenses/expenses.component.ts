@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UtilitiesService } from '../services/utilities.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CategoriesService } from '../services/categories.service';
+import { CategoriesService } from '../services/expense-categories.service';
 import { Category } from '../models/category';
 import { Expense } from '../models/expense';
 
