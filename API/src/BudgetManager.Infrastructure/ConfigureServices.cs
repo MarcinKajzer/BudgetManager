@@ -14,6 +14,9 @@ namespace BudgetManager.Infrastructure
 
             services.AddSingleton<IIncomeRepository, IncomeRepository>();
             services.AddSingleton<IIncomeCategoryRepository, IncomeCategoryRepository>();
+
+            services.AddSingleton<IIncomeTableRepository, IncomeTableRepository>();
+            services.AddSingleton<IExpenseTableRepository, ExpenseTableRepository>();
            
             return services;
         }

@@ -1,5 +1,4 @@
 ﻿using BudgetManager.Application.Interfaces;
-using BudgetManager.Domain.Categories;
 using Mediator;
 
 namespace BudgetManager.Application.Categories.Queries
@@ -8,16 +7,16 @@ namespace BudgetManager.Application.Categories.Queries
 
     public class GetAllExpenseCategoriesResult
     {
-        public GetAllExpenseCategoriesResult(Guid id, string name, IEnumerable<ExpenseSubcategory> subcategories)
-        {
-            Id = id;
-            Name = name;
-            Subcategories = subcategories;
-        }
-
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<ExpenseSubcategory> Subcategories { get; set; }
+        public IEnumerable<ExpenseSubcategoryDto> Subcategories { get; set; }
+
+        public class ExpenseSubcategoryDto
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+            public Guid CategoryId { get; set; }
+        }
     }
 
     public class GetAllExpenseCategoriesRequest : IRequestHandler<GetAllExpenseCategoriesQuery, IEnumerable<GetAllExpenseCategoriesResult>>
@@ -29,7 +28,18 @@ namespace BudgetManager.Application.Categories.Queries
         }
         public ValueTask<IEnumerable<GetAllExpenseCategoriesResult>> Handle(GetAllExpenseCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var categories = _repository.GetAll().Select(c => new GetAllExpenseCategoriesResult(c.Id, c.Name, c.Subcategories));
+            var categories = _repository.GetAll().Select(c =>
+                new GetAllExpenseCategoriesResult
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Subcategories = c.Subcategories.Select(s => new GetAllExpenseCategoriesResult.ExpenseSubcategoryDto
+                    {
+                        CategoryId = s.CategoryId,
+                        Id = s.Id,
+                        Name = s.Name
+                    })
+                });
             return new ValueTask<IEnumerable<GetAllExpenseCategoriesResult>>(categories);
         }
     }
