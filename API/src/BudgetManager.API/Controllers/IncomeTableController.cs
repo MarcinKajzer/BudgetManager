@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetManager.API.Controllers
 {
+    [Route("/api/[controller]")]
+    [ApiController]
     public class IncomeTableController : ApplicationControllerBase
     {
         public IncomeTableController(IMediator mediator) : base(mediator)

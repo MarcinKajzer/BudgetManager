@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { CategoriesService } from '../services/expense-categories.service';
 import { Category } from '../models/category';
 import { Expense } from '../models/expense';
+import { ExpensesService } from '../services/expenses.service';
 
 @Component({
   selector: 'app-expenses',
@@ -37,15 +38,15 @@ export class ExpensesComponent {
   editExpensesPopupXOffset: number = 0;
   editExpensesPopupYOffset: number = 0;
 
-  constructor(private utilitiesService: UtilitiesService, private categoriesService: CategoriesService) {
+  constructor(private utilitiesService: UtilitiesService, private categoriesService: CategoriesService, private expensesService: ExpensesService) {
     //safesub
     this.utilitiesService.getIsExpensesPopoverVisible().subscribe(isVisible => this.isEditExpensesPopupVisible = isVisible);
 
-    this.categoriesService.getCategories().subscribe(data => { 
+    this.expensesService.getExpenses().subscribe(data => { 
       this.prepareData(data);
       this.data = data
     });
-    this.categoriesService.refreshCategory(); //Wybór miesiąca i roku
+    this.expensesService.refreshExpenses(); //Wybór miesiąca i roku
 
     this.expensesForm = new FormGroup({
       amount: new FormControl(''),
@@ -138,14 +139,14 @@ export class ExpensesComponent {
   addExpense(event: any) {
     const date = new Date();
     date.setDate(this.selectedDay)
-    this.categoriesService.addExpense(this.selectedSubcategoryId!, event.target.value, date);
+    this.expensesService.addExpense(this.selectedSubcategoryId!, event.target.value, date);
   }
 
   updateExpenseAmount(event: any, expense: Expense) {
-    this.categoriesService.updateExpense(expense.id, event.target.value, expense.comment);
+    this.expensesService.updateExpense(expense.id, event.target.value, expense.comment);
   }
 
   updateExpenseComment(event: any, expense: Expense) {
-    this.categoriesService.updateExpense(expense.id, expense.amount, event.target.value);
+    this.expensesService.updateExpense(expense.id, expense.amount, event.target.value);
   }
 }

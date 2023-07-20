@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetManager.API.Controllers
 {
-    [Route("/api/controller")]
+    [Route("/api/[controller]")]
     [ApiController]
-    public class ExpensesTableController : ApplicationControllerBase
+    public class ExpenseTableController : ApplicationControllerBase
     {
-        public ExpensesTableController(IMediator mediator) : base(mediator)
+        public ExpenseTableController(IMediator mediator) : base(mediator)
         {
         }
 
