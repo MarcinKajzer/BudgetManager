@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Category } from '../models/category';
+import { ExpenseCategory } from '../models/expenseCategory';
 import { CategoriesService } from '../services/expense-categories.service';
 
 
@@ -9,7 +9,7 @@ import { CategoriesService } from '../services/expense-categories.service';
     styleUrls: ['./categories-list.component.scss']
 })
 export class CategoriesListComponent {
-  expensesCategories: Category[] = [];
+  expensesCategories: ExpenseCategory[] = [];
 
   //DO PRZENIESIENIA
   earningsCategories = [

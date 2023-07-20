@@ -1,6 +1,6 @@
 import { Expense } from "./expense";
 
-export interface Subcategory {
+export interface ExpenseSubcategory {
   id: string,
   name: string,
   expenses: Expense[]

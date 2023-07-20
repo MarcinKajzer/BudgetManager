@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Category } from '../models/category';
+import { ExpenseCategory } from '../models/expenseCategory';
 import { Observable, Subject, concatMap } from 'rxjs';
 
 @Injectable({
@@ -9,18 +9,18 @@ import { Observable, Subject, concatMap } from 'rxjs';
 export class ExpensesService {
 
   apiUrl = 'https://localhost:7261/api';
-  private expenses$: Subject<Category[]>;
+  private expenses$: Subject<ExpenseCategory[]>;
 
   constructor(private httpClient: HttpClient) {
     this.expenses$ = new Subject();
   }
 
-  getExpenses(): Observable<Category[]> {
-    return this.expenses$ as Observable<Category[]>;
+  getExpenses(): Observable<ExpenseCategory[]> {
+    return this.expenses$ as Observable<ExpenseCategory[]>;
   }
 
   refreshExpenses(): void {
-    this.httpClient.get<Category[]>(`${this.apiUrl}/expenseTable`).subscribe(expenses => this.expenses$.next(expenses));
+    this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable`).subscribe(expenses => this.expenses$.next(expenses));
   }
 
   addExpense(subcategoryId: string, amount: number, date: Date) {
@@ -32,7 +32,7 @@ export class ExpensesService {
     }
     this.httpClient.post(`${this.apiUrl}/expenses/`, payload)
         .pipe(
-            concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseTable`))
+            concatMap(() => this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable`))
         )
         .subscribe(expenses => this.expenses$.next(expenses))
   }
@@ -44,7 +44,7 @@ export class ExpensesService {
     }
     this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload)
         .pipe(
-            concatMap(() => this.httpClient.get<Category[]>(`${this.apiUrl}/expenseTable`))
+            concatMap(() => this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable`))
         )
         .subscribe(expenses => this.expenses$.next(expenses))
   }

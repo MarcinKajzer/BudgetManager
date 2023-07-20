@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Category } from '../models/category';
+import { ExpenseCategory } from '../models/expenseCategory';
 import { CategoriesService } from '../services/expense-categories.service';
 
 @Component({
@@ -9,9 +9,9 @@ import { CategoriesService } from '../services/expense-categories.service';
 })
 export class ExpensesCategoryComponent {
 
-  protected category?: Category;
+  protected category?: ExpenseCategory;
 
-  @Input() set Category(value: Category) {
+  @Input() set Category(value: ExpenseCategory) {
     this.category = value;
   }
 

@@ -12,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesCategoryComponent } from './expenses-category/expenses-category.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
+import { IncomesComponent } from './incomes/incomes.component';
 
 const routes = [
   {
@@ -35,7 +36,8 @@ const routes = [
     CategoriesListComponent,
     ExpensesComponent,
     DashboardComponent,
-    ExpensesCategoryComponent
+    ExpensesCategoryComponent,
+    IncomesComponent
   ],
   imports: [
     BrowserModule,

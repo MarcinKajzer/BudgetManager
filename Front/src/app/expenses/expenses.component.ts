@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UtilitiesService } from '../services/utilities.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CategoriesService } from '../services/expense-categories.service';
-import { Category } from '../models/category';
+import { ExpenseCategory } from '../models/expenseCategory';
 import { Expense } from '../models/expense';
 import { ExpensesService } from '../services/expenses.service';
 
@@ -26,7 +26,7 @@ export class ExpensesComponent {
   newExpenseComment: any
   savingExpensesId?: string;
 
-  data?: Category[];
+  data?: ExpenseCategory[];
   dailySummary?: number[];
   totalSummary?: number;
 
@@ -54,7 +54,7 @@ export class ExpensesComponent {
     });
   }
 
-  prepareData(data: Category[]) {
+  prepareData(data: ExpenseCategory[]) {
     this.dailySummary = Array(this.numberOfDays).fill(0);
     this.totalSummary = 0;
     
