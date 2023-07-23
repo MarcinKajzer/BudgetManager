@@ -7,7 +7,7 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
     {
         public void Add(Income income)
         {
-            var category = InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Incomes.Any(s => s.Id == income.CategoryId));
+            var category = InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Id == income.CategoryId);
             category.Incomes.Add(income);
         }
         public Income? Get(Guid id)

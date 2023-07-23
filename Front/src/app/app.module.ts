@@ -20,6 +20,10 @@ const routes = [
     component: ExpensesComponent
   },
   {
+    path: 'incomes',
+    component: IncomesComponent
+  },
+  {
     path: 'dashboard',
     component: DashboardComponent
   },

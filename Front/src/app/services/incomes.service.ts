@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
-import { ExpenseCategory } from '../models/expenseCategory';
 import { HttpClient } from '@angular/common/http';
+import { IncomeCategory } from '../models/incomeCategory';
 
 @Injectable({
   providedIn: 'root'
@@ -9,21 +9,21 @@ import { HttpClient } from '@angular/common/http';
 export class IncomesService {
 
   apiUrl = 'https://localhost:7261/api';
-  private incomes$: Subject<ExpenseCategory[]>;
+  private incomes$: Subject<IncomeCategory[]>;
 
   constructor(private httpClient: HttpClient) {
     this.incomes$ = new Subject();
   }
 
-  getIncomes(): Observable<ExpenseCategory[]> {
-    return this.incomes$ as Observable<ExpenseCategory[]>;
+  getIncomes(): Observable<IncomeCategory[]> {
+    return this.incomes$ as Observable<IncomeCategory[]>;
   }
 
   refreshIncomes(): void {
-    this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable`).subscribe(incomes => this.incomes$.next(incomes));
+    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`).subscribe(incomes => this.incomes$.next(incomes));
   }
 
-  addExpense(categoryId: string, amount: number, date: Date) {
+  addIncome(categoryId: string, amount: number, date: Date) {
     const payload = {
       categoryId,
       date,
@@ -32,19 +32,19 @@ export class IncomesService {
     }
     this.httpClient.post(`${this.apiUrl}/income/`, payload)
       .pipe(
-        concatMap(() => this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/incomeTable`))
+        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`))
       )
       .subscribe(incomes => this.incomes$.next(incomes))
   }
 
-  updateExpense(incomeId: string, amount: number, comment: string) {
+  updateIncome(incomeId: string, amount: number, comment: string) {
     const payload = {
       amount: +amount,
       comment
     }
     this.httpClient.put(`${this.apiUrl}/income/${incomeId}`, payload)
       .pipe(
-        concatMap(() => this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/incomeTable`))
+        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`))
       )
       .subscribe(incomes => this.incomes$.next(incomes))
   }

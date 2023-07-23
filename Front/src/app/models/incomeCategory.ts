@@ -1,6 +1,6 @@
 import { Income } from "./income";
 
-export interface ExpenseCategory {
+export interface IncomeCategory {
   id: string,
   name: string,
   incomes: Income[];

@@ -15,6 +15,9 @@ export class AppComponent {
       this.utilitiesService.setIsExpensesPopoverVisible(false);
     }
 
+    if (event.target.closest('#incomes-list-popup') == null && !event.target.classList.contains("category-day") && event.target.closest("#edit-incomes-popup") == null) {
+      this.utilitiesService.setIsIncomesPopoverVisible(false);
+    }
   }
 
   constructor(private utilitiesService: UtilitiesService) {
