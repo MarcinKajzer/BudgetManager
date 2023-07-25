@@ -1,4 +1,4 @@
-﻿using BudgetManager.Domain.EarningsCategories;
+﻿using BudgetManager.Domain.Incomes;
 
 namespace BudgetManager.Application.Interfaces
 {

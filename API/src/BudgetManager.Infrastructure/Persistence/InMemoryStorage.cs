@@ -1,6 +1,4 @@
-﻿using BudgetManager.Domain.Categories;
-using BudgetManager.Domain.EarningsCategories;
-using BudgetManager.Domain.Expenses;
+﻿using BudgetManager.Domain.Expenses;
 using BudgetManager.Domain.Incomes;
 
 namespace BudgetManager.Infrastructure.Persistence

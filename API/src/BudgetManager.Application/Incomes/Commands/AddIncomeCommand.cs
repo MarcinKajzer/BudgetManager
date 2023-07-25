@@ -26,7 +26,7 @@ namespace BudgetManager.Application.Incomes.Commands
                 Amount = request.Amount,
                 Comment = request.Comment,
                 Date = request.Date,
-                CategoryId = category.Id
+                //CategoryId = category.Id
             };
 
             _incomeRepository.Add(income);

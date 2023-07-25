@@ -1,4 +1,4 @@
-﻿using BudgetManager.Domain.Categories;
+﻿using BudgetManager.Domain.Expenses;
 
 namespace BudgetManager.Application.Interfaces
 {

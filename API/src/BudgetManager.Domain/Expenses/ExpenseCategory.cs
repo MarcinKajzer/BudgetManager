@@ -1,9 +1,10 @@
-﻿namespace BudgetManager.Domain.Categories
+﻿using BudgetManager.Domain.Common;
+
+namespace BudgetManager.Domain.Expenses
 {
-    public class ExpenseCategory
+    public class ExpenseCategory : BaseAuditableEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<ExpenseSubcategory> Subcategories { get; set;} = new List<ExpenseSubcategory>();
+        public virtual ICollection<ExpenseSubcategory> Subcategories { get; set;}
     }
 }

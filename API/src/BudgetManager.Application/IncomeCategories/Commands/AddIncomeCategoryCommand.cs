@@ -1,5 +1,5 @@
 ﻿using BudgetManager.Application.Interfaces;
-using BudgetManager.Domain.EarningsCategories;
+using BudgetManager.Domain.Incomes;
 using Mediator;
 
 namespace BudgetManager.Application.IncomeCategories.Commands

@@ -1,11 +1,12 @@
-﻿namespace BudgetManager.Domain.Expenses
+﻿using BudgetManager.Domain.Common;
+
+namespace BudgetManager.Domain.Expenses
 {
-    public class Expense
+    public class Expense : BaseAuditableEntity
     {
-        public Guid Id { get; set; }
         public decimal Amount { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         public DateTime Date { get; set; }
-        public Guid SubcategoryId { get; set; }
+        public virtual ExpenseSubcategory Subcategory { get; set; }
     }
 }

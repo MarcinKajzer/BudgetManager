@@ -42,7 +42,7 @@ namespace BudgetManager.Application.IncomesTable.Queries
                         Comment = i.Comment,
                         Date = i.Date,
                         Id = i.Id,
-                        CategoryId = i.CategoryId
+                        //CategoryId = i.CategoryId
                     }).ToList()
                 });
 

@@ -1,11 +1,12 @@
-﻿namespace BudgetManager.Domain.Incomes
+﻿using BudgetManager.Domain.Common;
+
+namespace BudgetManager.Domain.Incomes
 {
-    public class Income
+    public class Income : BaseAuditableEntity
     {
-        public Guid Id { get; set; }
         public decimal Amount { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         public DateTime Date { get; set; }
-        public Guid CategoryId { get; set; }
+        public virtual IncomeCategory Category { get; set; }
     }
 }

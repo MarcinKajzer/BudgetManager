@@ -26,7 +26,7 @@ namespace BudgetManager.Application.Expenses.Commands
                 Amount = request.Amount,
                 Comment = request.Comment,
                 Date = request.Date,
-                SubcategoryId = subcategory.Id
+                //SubcategoryId = subcategory.Id
             };
 
             _expenseRepository.Add(expense);

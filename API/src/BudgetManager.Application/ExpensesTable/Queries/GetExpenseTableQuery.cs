@@ -55,7 +55,7 @@ namespace BudgetManager.Application.ExpenseTables.Queries
                             Comment = e.Comment,
                             Date = e.Date,
                             Id = e.Id,
-                            SubcategoryId = e.SubcategoryId
+                            //SubcategoryId = e.SubcategoryId
                         }).ToList()
                     })
                 });

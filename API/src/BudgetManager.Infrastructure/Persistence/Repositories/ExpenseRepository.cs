@@ -7,7 +7,7 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
     {
         public void Add(Expense expense)
         {
-            var subcategory = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Id == expense.SubcategoryId))?.Subcategories.First(sc => sc.Id == expense.SubcategoryId);
+            var subcategory = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Id == expense.Subcategory.Id))?.Subcategories.First(sc => sc.Id == expense.Subcategory.Id);
             subcategory.Expenses.Add(expense);
         }
         public Expense? Get(Guid id)

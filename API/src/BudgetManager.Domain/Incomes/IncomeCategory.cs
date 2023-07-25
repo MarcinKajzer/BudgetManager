@@ -1,11 +1,10 @@
-﻿using BudgetManager.Domain.Incomes;
+﻿using BudgetManager.Domain.Common;
 
-namespace BudgetManager.Domain.EarningsCategories
+namespace BudgetManager.Domain.Incomes
 {
-    public class IncomeCategory
+    public class IncomeCategory : BaseAuditableEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Income> Incomes { get; set; } = new List<Income>();
+        public virtual ICollection<Income> Incomes { get; set; }
     }
 }
