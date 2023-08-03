@@ -4,10 +4,10 @@ namespace BudgetManager.Application.Interfaces
 {
     public interface IExpenseCategoryRepository
     {
-        void Add(ExpenseCategory category);
+        Task CreateAsync(ExpenseCategory category, CancellationToken cancellationToken);
         ExpenseCategory? Get(Guid id);
         IEnumerable<ExpenseCategory> GetAll();
-        bool Update(ExpenseCategory category);
-        bool Delete(Guid id);
+        Task UpdateAsync(ExpenseCategory category, CancellationToken cancellationToken);
+        Task DeleteAsync(ExpenseCategory category, CancellationToken cancellationToken);
     }
 }

@@ -4,9 +4,9 @@ using Mediator;
 
 namespace BudgetManager.Application.IncomeCategories.Commands
 {
-    public record EditIncomeCategoryCommand(Guid Id, string Name) : IRequest<bool>;
+    public record EditIncomeCategoryCommand(Guid Id, string Name) : IRequest<Unit>;
 
-    public class EditIncomeCategoryHandler : IRequestHandler<EditIncomeCategoryCommand, bool>
+    public class EditIncomeCategoryHandler : IRequestHandler<EditIncomeCategoryCommand, Unit>
     {
         private readonly IIncomeCategoryRepository _repository;
 
@@ -15,12 +15,13 @@ namespace BudgetManager.Application.IncomeCategories.Commands
             _repository = repository;
         }
 
-        public ValueTask<bool> Handle(EditIncomeCategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(EditIncomeCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = _repository.Get(request.Id) ?? throw new NotFoundException();
             category.Name = request.Name;
 
-            return new ValueTask<bool>(_repository.Update(category));
+            await _repository.UpdateAsync(category, cancellationToken);
+            return Unit.Value;
         }
     }
 }

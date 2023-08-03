@@ -1,40 +1,40 @@
 ﻿using BudgetManager.Application.Interfaces;
 using BudgetManager.Domain.Expenses;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class ExpenseCategoryRepository : IExpenseCategoryRepository
     {
-        public void Add(ExpenseCategory category)
+        private readonly ApplicationDbContext _context;
+        public ExpenseCategoryRepository(ApplicationDbContext context)
         {
-            InMemoryStorage.expenseCategories.Add(category);
+            _context = context;
+        }
+
+        public async Task CreateAsync(ExpenseCategory category, CancellationToken cancellationToken)
+        {
+            await _context.ExpenseCategory.AddAsync(category, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public ExpenseCategory? Get(Guid id)
         {
-            return InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Id == id);
+            return _context.ExpenseCategory.FirstOrDefault(c => c.Id == id);
         }
 
-        public IEnumerable<ExpenseCategory> GetAll() => InMemoryStorage.expenseCategories;
+        public IEnumerable<ExpenseCategory> GetAll() => _context.ExpenseCategory.Include(c => c.Subcategories);
 
-        public bool Update(ExpenseCategory category)
+        public async Task UpdateAsync(ExpenseCategory category, CancellationToken cancellationToken)
         {
-            //Polityka 
-            //Bez implementacji, bo na razie update w pamięci
-            return true;
+            _context.ExpenseCategory.Update(category);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Delete(Guid id)
+        public async Task DeleteAsync(ExpenseCategory category, CancellationToken cancellationToken)
         {
-            var cat = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Id == id);
-
-            if (cat is null)
-            {
-                return false;
-            }
-
-            InMemoryStorage.expenseCategories.Remove(cat);
-            return true;
+            _context.ExpenseCategory.Remove(category);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

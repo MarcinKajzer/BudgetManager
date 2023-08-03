@@ -13,16 +13,15 @@ namespace BudgetManager.Application.Incomes.Commands
         {
             _incomeRepository = incomeRepository;
         }
-        public ValueTask<Unit> Handle(EditIncomeCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(EditIncomeCommand request, CancellationToken cancellationToken)
         {
             var income = _incomeRepository.Get(request.Id) ?? throw new NotFoundException();
 
             income.Amount = request.Amount;
             income.Comment = request.Comment;
 
-            _incomeRepository.Edit(income);
-
-            return new ValueTask<Unit>(Unit.Value);
+            await _incomeRepository.UpdateAsync(income, cancellationToken);
+            return Unit.Value;
         }
     }
 }

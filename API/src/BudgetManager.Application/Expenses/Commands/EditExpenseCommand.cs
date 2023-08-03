@@ -13,16 +13,15 @@ namespace BudgetManager.Application.Expenses.Commands
         {
             _expenseRepository = expenseRepository;
         }
-        public ValueTask<Unit> Handle(EditExpenseCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(EditExpenseCommand request, CancellationToken cancellationToken)
         {
             var expense = _expenseRepository.Get(request.Id) ?? throw new NotFoundException();
 
             expense.Amount = request.Amount;
             expense.Comment = request.Comment;
 
-            _expenseRepository.Edit(expense);
-
-            return new ValueTask<Unit>(Unit.Value);
+            await _expenseRepository.UpdateAsync(expense, cancellationToken);
+            return Unit.Value;
         }
     }
 }

@@ -13,16 +13,15 @@ namespace BudgetManager.Application.IncomeCategories.Commands
         {
             _repository = repository;
         }
-        public ValueTask<Guid> Handle(AddIncomeCategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Guid> Handle(AddIncomeCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = new IncomeCategory
             {
                 Name = request.Name,
-                Id = Guid.NewGuid(),
             };
 
-            _repository.Add(category);
-            return new ValueTask<Guid>(category.Id); //jak dział value task i czy zwrotka nowego taska to dobre rozwiązanie ? 
+            await _repository.CreateAsync(category, cancellationToken);
+            return category.Id;
         }
     }
 }

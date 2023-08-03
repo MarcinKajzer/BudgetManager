@@ -4,9 +4,9 @@ using Mediator;
 
 namespace BudgetManager.Application.Categories.Commands
 {
-    public record DeleteExpenseCategoryCommand(Guid Id) : IRequest<bool>;
+    public record DeleteExpenseCategoryCommand(Guid Id) : IRequest<Unit>;
 
-    public class DeleteExpenseCategoryHandler : IRequestHandler<DeleteExpenseCategoryCommand, bool>
+    public class DeleteExpenseCategoryHandler : IRequestHandler<DeleteExpenseCategoryCommand, Unit>
     {
         private readonly IExpenseCategoryRepository _repository;
 
@@ -15,12 +15,13 @@ namespace BudgetManager.Application.Categories.Commands
             _repository = repository;
         }
 
-        public ValueTask<bool> Handle(DeleteExpenseCategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(DeleteExpenseCategoryCommand request, CancellationToken cancellationToken)
         {
             //Polityka usuwania - jeśli dana kategoria ma już zapisane wydatki - soft delete, usunięcie z listy, nie pokazywanie w nowych misiącach
 
             var category = _repository.Get(request.Id) ?? throw new NotFoundException();
-            return new ValueTask<bool>(_repository.Delete(request.Id));
+            await _repository.DeleteAsync(category, cancellationToken);
+            return Unit.Value;
         }
     }
 }

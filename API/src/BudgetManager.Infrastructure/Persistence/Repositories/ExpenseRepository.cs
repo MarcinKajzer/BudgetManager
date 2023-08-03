@@ -5,29 +5,33 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class ExpenseRepository : IExpenseRepository
     {
-        public void Add(Expense expense)
+        private readonly ApplicationDbContext _context;
+        public ExpenseRepository(ApplicationDbContext context)
         {
-            var subcategory = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Id == expense.Subcategory.Id))?.Subcategories.First(sc => sc.Id == expense.Subcategory.Id);
-            subcategory.Expenses.Add(expense);
+            _context = context;
         }
+
+        public async Task CreateAsync(Expense expense, CancellationToken cancellationToken)
+        {
+            await _context.Expenses.AddAsync(expense, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
         public Expense? Get(Guid id)
         {
-            var subcategory = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Expenses.Any(e => e.Id == id)))?.Subcategories.First(sc => sc.Expenses.Any(e => e.Id == id));
-            return subcategory.Expenses.FirstOrDefault(e => e.Id == id);
+            return _context.Expenses.FirstOrDefault(e => e.Id == id);
         }
 
-        public bool Delete(Guid id)
+        public async Task DeleteAsync(Expense expense, CancellationToken cancellationToken)
         {
-            var subcategory = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Expenses.Any(e => e.Id == id)))?.Subcategories.First(sc => sc.Expenses.Any(e => e.Id == id));
-            var expense = subcategory.Expenses.FirstOrDefault(e => e.Id == id);
-            subcategory.Expenses.Remove(expense);
-
-            return true;
+            _context.Expenses.Remove(expense);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Edit(Expense expense)
+        public async Task UpdateAsync(Expense expense, CancellationToken cancellationToken)
         {
-            return true;
+            _context.Expenses.Update(expense);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

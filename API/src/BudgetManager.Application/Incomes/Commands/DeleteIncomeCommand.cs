@@ -13,12 +13,12 @@ namespace BudgetManager.Application.Incomes.Commands
         {
             _repository = repository;
         }
-        public ValueTask<Unit> Handle(DeleteIncomeCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(DeleteIncomeCommand request, CancellationToken cancellationToken)
         {
             var income = _repository.Get(request.Id) ?? throw new NotFoundException();
-            _repository.Delete(income.Id); // możnaby przekazać cały obiekt zamist tylko Id
 
-            return new ValueTask<Unit>(Unit.Value);
+            await _repository.DeleteAsync(income, cancellationToken);
+            return Unit.Value;
         }
     }
 }

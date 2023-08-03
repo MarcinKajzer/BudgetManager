@@ -8,13 +8,17 @@ namespace BudgetManager.Infrastructure.Persistence;
 
 public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    private readonly AuditableEntitySaveChangesInterceptor _saveChangesInterceptor;
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, AuditableEntitySaveChangesInterceptor saveChangesInterceptor) : base(options)
+    {
+        _saveChangesInterceptor = saveChangesInterceptor;
+    }
 
-    //public DbSet<Income> Incomes { get; set; }
-    //public DbSet<IncomeCategory> IncomeCategories { get; set; }
-    //public DbSet<Expense> Expenses { get; set; }
-    //public DbSet<ExpenseSubcategory> ExpenseSubcategories { get; set; }
-    //public DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+    public DbSet<Income> Incomes { get; set; }
+    public DbSet<IncomeCategory> IncomeCategories { get; set; }
+    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<ExpenseSubcategory> ExpenseSubcategory { get; set; }
+    public DbSet<ExpenseCategory> ExpenseCategory { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -25,7 +29,8 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
-        builder.AddInterceptors(new AuditableEntitySaveChangesInterceptor());
+        builder.AddInterceptors(_saveChangesInterceptor);
+        builder.UseLazyLoadingProxies();
         base.OnConfiguring(builder);
     }
 }

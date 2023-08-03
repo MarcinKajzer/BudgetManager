@@ -2,7 +2,7 @@ using BudgetManager.Application;
 using BudgetManager.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Logging.AddConsole();
 // Add services to the container.
 
 builder.Services.AddControllers();

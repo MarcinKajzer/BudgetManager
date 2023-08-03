@@ -35,7 +35,7 @@ namespace BudgetManager.Application.Categories.Queries
                     Name = c.Name,
                     Subcategories = c.Subcategories.Select(s => new GetAllExpenseCategoriesResult.ExpenseSubcategoryDto
                     {
-                        CategoryId = s.CategoryId,
+                        CategoryId = s.Category.Id,
                         Id = s.Id,
                         Name = s.Name
                     })

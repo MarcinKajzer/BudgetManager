@@ -13,12 +13,12 @@ namespace BudgetManager.Application.Subcategories.Commands
         {
             _repository = repository;
         }
-        public ValueTask<Unit> Handle(DeleteSubcategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(DeleteSubcategoryCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _repository.Get(request.Id) ?? throw new NotFoundException();
-            _repository.Delete(subcategory.Id); // możnaby przekazać cały obiekt zamist tylko Id
+            await _repository.DeleteAsync(subcategory, cancellationToken);
 
-            return new ValueTask<Unit>(Unit.Value);
+            return Unit.Value;
         }
     }
 }

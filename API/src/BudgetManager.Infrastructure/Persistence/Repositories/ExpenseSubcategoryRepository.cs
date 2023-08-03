@@ -5,30 +5,27 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class ExpenseSubcategoryRepository : IExpenseSubcategoryRepository
     {
-        public void Add(ExpenseSubcategory subcategory)
+        private readonly ApplicationDbContext _context;
+        public ExpenseSubcategoryRepository(ApplicationDbContext context) => _context = context;
+
+        public async Task CreateAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken)
         {
-            var category = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Id == subcategory.CategoryId);
-            category.Subcategories.Add(subcategory);
+            await _context.ExpenseSubcategory.AddAsync(subcategory, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public ExpenseSubcategory? Get(Guid id)
+        public ExpenseSubcategory? Get(Guid id) => _context.ExpenseSubcategory.FirstOrDefault(s => s.Id == id);
+
+        public async Task DeleteAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken)
         {
-            return InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(s => s.Id == id))?.Subcategories.First(sc => sc.Id == id);
+            _context.ExpenseSubcategory.Remove(subcategory);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Delete(Guid id)
+        public async Task UpdateAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken)
         {
-            var category = InMemoryStorage.expenseCategories.FirstOrDefault(c => c.Subcategories.Any(sb => sb.Id == id));
-            var subcategory = category.Subcategories.FirstOrDefault(s => s.Id == id);
-            category.Subcategories.Remove(subcategory);
-
-            return true;
-        }
-
-        public bool Update(ExpenseSubcategory subcategory)
-        {
-            //W pamięci, więc brak implementacji
-            return true;
+            _context.ExpenseSubcategory.Update(subcategory);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

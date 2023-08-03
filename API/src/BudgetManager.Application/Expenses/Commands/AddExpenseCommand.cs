@@ -16,22 +16,20 @@ namespace BudgetManager.Application.Expenses.Commands
             _subcategoryRepository = subcategoryRepository;
             _expenseRepository = expenseRepository;
         }
-        public ValueTask<Guid> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Guid> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _subcategoryRepository.Get(request.SubcategoryId) ?? throw new NotFoundException();
 
             var expense = new Expense
             {
-                Id = Guid.NewGuid(),
                 Amount = request.Amount,
                 Comment = request.Comment,
                 Date = request.Date,
-                //SubcategoryId = subcategory.Id
+                Subcategory = subcategory
             };
 
-            _expenseRepository.Add(expense);
-
-            return new ValueTask<Guid>(expense.Id);
+            await _expenseRepository.CreateAsync(expense, cancellationToken);
+            return expense.Id;
         }
     }
 }

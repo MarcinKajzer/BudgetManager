@@ -5,36 +5,35 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class IncomeCategoryRepository : IIncomeCategoryRepository
     {
-        public void Add(IncomeCategory category)
+        private readonly ApplicationDbContext _context;
+        public IncomeCategoryRepository(ApplicationDbContext context)
         {
-            InMemoryStorage.incomeCategories.Add(category);
+            _context = context;
+        }
+
+        public async Task CreateAsync(IncomeCategory category, CancellationToken cancellationToken)
+        {
+            await _context.IncomeCategories.AddAsync(category, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public IncomeCategory? Get(Guid id)
         {
-            return InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Id == id);
+            return _context.IncomeCategories.FirstOrDefault(c => c.Id == id);
         }
 
-        public IEnumerable<IncomeCategory> GetAll() => InMemoryStorage.incomeCategories;
+        public IEnumerable<IncomeCategory> GetAll() => _context.IncomeCategories;
 
-        public bool Update(IncomeCategory category)
+        public async Task UpdateAsync(IncomeCategory category, CancellationToken cancellationToken)
         {
-            //Polityka 
-            //Bez implementacji, bo na razie update w pamięci
-            return true;
+            _context.IncomeCategories.Update(category);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Delete(Guid id)
+        public async Task DeleteAsync(IncomeCategory category, CancellationToken cancellationToken)
         {
-            var cat = InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Id == id);
-
-            if (cat is null)
-            {
-                return false;
-            }
-
-            InMemoryStorage.incomeCategories.Remove(cat);
-            return true;
+            _context.IncomeCategories.Remove(category);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -4,9 +4,9 @@ using Mediator;
 
 namespace BudgetManager.Application.IncomeCategories.Commands
 {
-    public record DeleteIncomeCategoryCommand(Guid Id) : IRequest<bool>;
+    public record DeleteIncomeCategoryCommand(Guid Id) : IRequest<Unit>;
 
-    public class DeleteIncomeCategoryHandler : IRequestHandler<DeleteIncomeCategoryCommand, bool>
+    public class DeleteIncomeCategoryHandler : IRequestHandler<DeleteIncomeCategoryCommand, Unit>
     {
         private readonly IIncomeCategoryRepository _repository;
 
@@ -15,12 +15,13 @@ namespace BudgetManager.Application.IncomeCategories.Commands
             _repository = repository;
         }
 
-        public ValueTask<bool> Handle(DeleteIncomeCategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(DeleteIncomeCategoryCommand request, CancellationToken cancellationToken)
         {
             //Polityka usuwania - jeśli dana kategoria ma już zapisane wydatki - soft delete, usunięcie z listy, nie pokazywanie w nowych misiącach
 
             var category = _repository.Get(request.Id) ?? throw new NotFoundException();
-            return new ValueTask<bool>(_repository.Delete(request.Id));
+            await _repository.DeleteAsync(category, cancellationToken);
+            return Unit.Value;
         }
     }
 }

@@ -4,9 +4,9 @@ namespace BudgetManager.Application.Interfaces
 {
     public interface IExpenseSubcategoryRepository
     {
-        void Add(ExpenseSubcategory subcategory);
+        Task CreateAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken);
         ExpenseSubcategory? Get(Guid id);
-        bool Update(ExpenseSubcategory subcategory);
-        bool Delete(Guid id);
+        Task UpdateAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken);
+        Task DeleteAsync(ExpenseSubcategory subcategory, CancellationToken cancellationToken);
     }
 }

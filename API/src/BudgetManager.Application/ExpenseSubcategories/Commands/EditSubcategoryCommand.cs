@@ -14,13 +14,13 @@ namespace BudgetManager.Application.Subcategories.Commands
         {
             _repository = repository;
         }
-        public ValueTask<Unit> Handle(EditSubcategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(EditSubcategoryCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _repository.Get(request.Id) ?? throw new NotFoundException();
             subcategory.Name = request.Name;
-            _repository.Update(subcategory);
-
-            return new ValueTask<Unit>(Unit.Value);
+            
+            await _repository.UpdateAsync(subcategory, cancellationToken);
+            return Unit.Value;
         }
     }
 }

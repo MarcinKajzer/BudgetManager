@@ -5,28 +5,27 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     internal class IncomeRepository : IIncomeRepository
     {
-        public void Add(Income income)
-        {
-            var category = InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Id == income.Category.Id);
-            category.Incomes.Add(income);
-        }
-        public Income? Get(Guid id)
-        {
-            return InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Incomes.Any(s => s.Id == id))?.Incomes.First(i => i.Id == id);
-        }
+        private readonly ApplicationDbContext _context;
+        public IncomeRepository(ApplicationDbContext context) => _context = context;
 
-        public bool Delete(Guid id)
+        public async Task CreateAsync(Income income, CancellationToken cancellationToken)
         {
-            var category = InMemoryStorage.incomeCategories.FirstOrDefault(c => c.Incomes.Any(s => s.Id == id));
-            var income = category.Incomes.First(i => i.Id == id);
-            category.Incomes.Remove(income);
+            await _context.Incomes.AddAsync(income, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            return true;
+        }
+        public Income? Get(Guid id) => _context.Incomes.FirstOrDefault(i => i.Id == id);
+
+        public async Task DeleteAsync(Income income, CancellationToken cancellationToken)
+        {
+            _context.Incomes.Remove(income);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public bool Edit(Income expense)
+        public async Task UpdateAsync(Income expense, CancellationToken cancellationToken)
         {
-            return true;
+            _context.Incomes.Update(expense);
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

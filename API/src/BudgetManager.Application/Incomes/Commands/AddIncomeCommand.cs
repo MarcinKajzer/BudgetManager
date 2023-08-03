@@ -16,22 +16,20 @@ namespace BudgetManager.Application.Incomes.Commands
             _categoryRepository = categoryRepository;
             _incomeRepository = incomeRepository;
         }
-        public ValueTask<Guid> Handle(AddIncomeCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Guid> Handle(AddIncomeCommand request, CancellationToken cancellationToken)
         {
             var category = _categoryRepository.Get(request.CategoryId) ?? throw new NotFoundException();
 
             var income = new Income
             {
-                Id = Guid.NewGuid(),
                 Amount = request.Amount,
                 Comment = request.Comment,
                 Date = request.Date,
-                //CategoryId = category.Id
+                Category = category
             };
 
-            _incomeRepository.Add(income);
-
-            return new ValueTask<Guid>(income.Id);
+            await _incomeRepository.CreateAsync(income, cancellationToken);
+            return income.Id;
         }
     }
 }

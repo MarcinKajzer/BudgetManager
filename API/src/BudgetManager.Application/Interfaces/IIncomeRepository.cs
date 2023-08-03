@@ -4,9 +4,9 @@ namespace BudgetManager.Application.Interfaces
 {
     public interface IIncomeRepository
     {
-        void Add(Income expense);
+        Task CreateAsync(Income income, CancellationToken cancellationToken);
         Income? Get(Guid id);
-        bool Edit(Income expense);
-        bool Delete(Guid id);
+        Task UpdateAsync(Income expense, CancellationToken cancellationToken);
+        Task DeleteAsync(Income income, CancellationToken cancellationToken);
     }
 }
