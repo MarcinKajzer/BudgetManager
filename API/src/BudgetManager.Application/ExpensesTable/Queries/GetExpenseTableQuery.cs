@@ -1,11 +1,13 @@
 ﻿using BudgetManager.Application.Interfaces;
+using BudgetManager.Domain.Expenses;
+using Mapster;
 using Mediator;
 
 namespace BudgetManager.Application.ExpenseTables.Queries
 {
     public record GetExpenseTableQuery : IRequest<IEnumerable<GetExpenseTableResult>>;
 
-    public class GetExpenseTableResult
+    public class GetExpenseTableResult : IRegister
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -27,6 +29,11 @@ namespace BudgetManager.Application.ExpenseTables.Queries
             public DateTime Date { get; set; }
             public Guid SubcategoryId { get; set; }
         }
+
+        public void Register(TypeAdapterConfig config)
+        {
+            config.NewConfig<ExpenseCategory, GetExpenseTableResult>();
+        }
     }
 
     public class GetExpenseTableHandler : IRequestHandler<GetExpenseTableQuery, IEnumerable<GetExpenseTableResult>>
@@ -38,29 +45,8 @@ namespace BudgetManager.Application.ExpenseTables.Queries
         }
         public ValueTask<IEnumerable<GetExpenseTableResult>> Handle(GetExpenseTableQuery request, CancellationToken cancellationToken)
         {
-            //TO DO: zaimplementować maperly
-            var categories = _repository.Get().Select(c =>
-                new GetExpenseTableResult
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Subcategories = c.Subcategories.Select(s => new GetExpenseTableResult.ExpenseSubcategoryDto
-                    {
-                        CategoryId = s.Category.Id,
-                        Id = s.Id,
-                        Name = s.Name,
-                        Expenses = s.Expenses.Select(e => new GetExpenseTableResult.ExpenseDto
-                        {
-                            Amount = e.Amount,
-                            Comment = e.Comment,
-                            Date = e.Date,
-                            Id = e.Id,
-                            //SubcategoryId = e.SubcategoryId
-                        }).ToList()
-                    })
-                });
-
-            return new ValueTask<IEnumerable<GetExpenseTableResult>>(categories);
+            var table = _repository.Get();
+            return new ValueTask<IEnumerable<GetExpenseTableResult>>(table.Adapt<GetExpenseTableResult[]>());
         }
     }
 }

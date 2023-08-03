@@ -5,6 +5,9 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
     public class ExpenseTableRepository : IExpenseTableRepository
     {
-        public IEnumerable<ExpenseCategory> Get() => InMemoryStorage.expenseCategories;
+        private readonly ApplicationDbContext _context;
+        public ExpenseTableRepository(ApplicationDbContext context) => _context = context;
+
+        public IEnumerable<ExpenseCategory> Get() => _context.ExpenseCategory;
     }
 }

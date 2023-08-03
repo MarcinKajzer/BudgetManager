@@ -12,7 +12,7 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ExpenseCategory",
+                name: "ExpenseCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -24,11 +24,11 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExpenseCategory", x => x.Id);
+                    table.PrimaryKey("PK_ExpenseCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "IncomeCategory",
+                name: "IncomeCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -40,17 +40,16 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IncomeCategory", x => x.Id);
+                    table.PrimaryKey("PK_IncomeCategories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExpenseSubcategory",
+                name: "ExpenseSubcategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExpenseCategoryId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: true),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -58,16 +57,17 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExpenseSubcategory", x => x.Id);
+                    table.PrimaryKey("PK_ExpenseSubcategories", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExpenseSubcategory_ExpenseCategory_ExpenseCategoryId",
-                        column: x => x.ExpenseCategoryId,
-                        principalTable: "ExpenseCategory",
-                        principalColumn: "Id");
+                        name: "FK_ExpenseSubcategories_ExpenseCategories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "ExpenseCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Income",
+                name: "Incomes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -82,17 +82,17 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Income", x => x.Id);
+                    table.PrimaryKey("PK_Incomes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Income_IncomeCategory_CategoryId",
+                        name: "FK_Incomes_IncomeCategories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "IncomeCategory",
+                        principalTable: "IncomeCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Expense",
+                name: "Expenses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -107,28 +107,28 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Expense", x => x.Id);
+                    table.PrimaryKey("PK_Expenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Expense_ExpenseSubcategory_SubcategoryId",
+                        name: "FK_Expenses_ExpenseSubcategories_SubcategoryId",
                         column: x => x.SubcategoryId,
-                        principalTable: "ExpenseSubcategory",
+                        principalTable: "ExpenseSubcategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Expense_SubcategoryId",
-                table: "Expense",
+                name: "IX_Expenses_SubcategoryId",
+                table: "Expenses",
                 column: "SubcategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseSubcategory_ExpenseCategoryId",
-                table: "ExpenseSubcategory",
-                column: "ExpenseCategoryId");
+                name: "IX_ExpenseSubcategories_CategoryId",
+                table: "ExpenseSubcategories",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Income_CategoryId",
-                table: "Income",
+                name: "IX_Incomes_CategoryId",
+                table: "Incomes",
                 column: "CategoryId");
         }
 
@@ -136,19 +136,19 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Expense");
+                name: "Expenses");
 
             migrationBuilder.DropTable(
-                name: "Income");
+                name: "Incomes");
 
             migrationBuilder.DropTable(
-                name: "ExpenseSubcategory");
+                name: "ExpenseSubcategories");
 
             migrationBuilder.DropTable(
-                name: "IncomeCategory");
+                name: "IncomeCategories");
 
             migrationBuilder.DropTable(
-                name: "ExpenseCategory");
+                name: "ExpenseCategories");
         }
     }
 }

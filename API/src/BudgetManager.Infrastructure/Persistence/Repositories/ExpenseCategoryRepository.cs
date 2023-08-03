@@ -7,10 +7,7 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
     public class ExpenseCategoryRepository : IExpenseCategoryRepository
     {
         private readonly ApplicationDbContext _context;
-        public ExpenseCategoryRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public ExpenseCategoryRepository(ApplicationDbContext context) =>  _context = context;
 
         public async Task CreateAsync(ExpenseCategory category, CancellationToken cancellationToken)
         {

@@ -6,10 +6,7 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
     public class IncomeCategoryRepository : IIncomeCategoryRepository
     {
         private readonly ApplicationDbContext _context;
-        public IncomeCategoryRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        public IncomeCategoryRepository(ApplicationDbContext context) => _context = context;
 
         public async Task CreateAsync(IncomeCategory category, CancellationToken cancellationToken)
         {

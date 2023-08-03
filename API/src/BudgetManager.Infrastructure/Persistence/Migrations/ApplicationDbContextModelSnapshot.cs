@@ -18,6 +18,9 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.9")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -57,7 +60,7 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("SubcategoryId");
 
-                    b.ToTable("Expense");
+                    b.ToTable("Expenses", (string)null);
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Expenses.ExpenseCategory", b =>
@@ -85,7 +88,7 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ExpenseCategory");
+                    b.ToTable("ExpenseCategories", (string)null);
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Expenses.ExpenseSubcategory", b =>
@@ -103,9 +106,6 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ExpenseCategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -119,9 +119,9 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExpenseCategoryId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("ExpenseSubcategory");
+                    b.ToTable("ExpenseSubcategories", (string)null);
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Incomes.Income", b =>
@@ -159,7 +159,7 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Income");
+                    b.ToTable("Incomes", (string)null);
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Incomes.IncomeCategory", b =>
@@ -187,7 +187,7 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IncomeCategory");
+                    b.ToTable("IncomeCategories", (string)null);
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Expenses.Expense", b =>
@@ -203,9 +203,13 @@ namespace BudgetManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("BudgetManager.Domain.Expenses.ExpenseSubcategory", b =>
                 {
-                    b.HasOne("BudgetManager.Domain.Expenses.ExpenseCategory", null)
+                    b.HasOne("BudgetManager.Domain.Expenses.ExpenseCategory", "Category")
                         .WithMany("Subcategories")
-                        .HasForeignKey("ExpenseCategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("BudgetManager.Domain.Incomes.Income", b =>
