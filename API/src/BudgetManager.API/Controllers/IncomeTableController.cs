@@ -8,14 +8,12 @@ namespace BudgetManager.API.Controllers
     [ApiController]
     public class IncomeTableController : ApplicationControllerBase
     {
-        public IncomeTableController(IMediator mediator) : base(mediator)
-        {
-        }
+        public IncomeTableController(IMediator mediator) : base(mediator) { }
 
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(int Year, int Month, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(new GetIncomeTableQuery(), cancellationToken));
+            return Ok(await _mediator.Send(new GetIncomeTableQuery(Year, Month), cancellationToken));
         }
     }
 }

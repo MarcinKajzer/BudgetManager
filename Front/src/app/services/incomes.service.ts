@@ -19,8 +19,8 @@ export class IncomesService {
     return this.incomes$ as Observable<IncomeCategory[]>;
   }
 
-  refreshIncomes(): void {
-    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`).subscribe(incomes => this.incomes$.next(incomes));
+  refreshIncomes(year: number, month: number): void {
+    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable?year=${year}&month=${month}`).subscribe(incomes => this.incomes$.next(incomes));
   }
 
   addIncome(categoryId: string, amount: number, date: Date) {

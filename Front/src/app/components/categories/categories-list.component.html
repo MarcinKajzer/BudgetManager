@@ -1,0 +1,5 @@
+<button class="btn btn-primary" [ngClass]="!displayExpensesCategories ? 'btn-primary' : 'btn-secondary'" type="button" (click)="showEarnings()">Incomes</button>
+<button class="btn btn-primary ms-2" [ngClass]="!displayExpensesCategories ? 'btn-secondary' : 'btn-primary'" type="button" (click)="showExpenses()">Expenses</button>
+
+<app-income-categories-list *ngIf="!displayExpensesCategories"></app-income-categories-list>
+<app-expense-categories-list *ngIf="displayExpensesCategories"></app-expense-categories-list>

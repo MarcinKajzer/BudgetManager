@@ -29,6 +29,8 @@
     </div>
 </div>
 
+<app-date-selector [year]="selectedYear" [month]="selectedMonth" (selectDate)="changeDate($event)"></app-date-selector>
+
 <div class="table-responsive">
     <table class="table table-bordered">
         <thead class="table-dark">

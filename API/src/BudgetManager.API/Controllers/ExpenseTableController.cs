@@ -13,9 +13,9 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(CancellationToken cancellationToken)
+        public async Task<IActionResult> Get(int Year, int Month, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(new GetExpenseTableQuery(), cancellationToken));
+            return Ok(await _mediator.Send(new GetExpenseTableQuery(Year, Month), cancellationToken));
         }
     }
 }

@@ -1,0 +1,11 @@
+<div class="container">
+    <div class="row">
+        <select [(ngModel)]="selectedDate.year" class="form-select col-sm">
+            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+        </select>
+        <select [(ngModel)]="selectedDate.month" class="form-select col-sm">
+            <option *ngFor="let month of months" [value]="month.value">{{ month.key }}</option>
+        </select>
+        <button (click)="confirmDate()" type="button" class="col-sm btn btn-primary">Show</button>
+    </div>
+</div>

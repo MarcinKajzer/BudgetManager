@@ -19,8 +19,8 @@ export class ExpensesService {
     return this.expenses$ as Observable<ExpenseCategory[]>;
   }
 
-  refreshExpenses(): void {
-    this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable`).subscribe(expenses => this.expenses$.next(expenses));
+  refreshExpenses(year: number, month: number): void {
+    this.httpClient.get<ExpenseCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`).subscribe(expenses => this.expenses$.next(expenses));
   }
 
   addExpense(subcategoryId: string, amount: number, date: Date) {

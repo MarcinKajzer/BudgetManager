@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { UtilitiesService } from '../services/utilities.service';
-import { IncomesService } from '../services/incomes.service';
-import { IncomeCategory } from '../models/incomeCategory';
-import { Income } from '../models/income';
+import { UtilitiesService } from '../../services/utilities.service';
+import { IncomesService } from '../../services/incomes.service';
+import { IncomeCategory } from '../../models/incomeCategory';
+import { Income } from '../../models/income';
 
 @Component({
   selector: 'app-incomes',
@@ -11,6 +11,11 @@ import { Income } from '../models/income';
   styleUrls: ['./incomes.component.scss']
 })
 export class IncomesComponent {
+
+  date = new Date()
+  selectedYear: number = this.date.getFullYear();
+  selectedMonth: number = this.date.getMonth() + 1 ;
+
   numberOfDays = 30;
   days = Array.from({ length: this.numberOfDays }, (_, index) => index + 1);
   incomesForm: FormGroup;
@@ -43,7 +48,7 @@ export class IncomesComponent {
       this.prepareData(data);
       this.data = data
     });
-    this.incomesService.refreshIncomes(); //Wybór miesiąca i roku
+    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth);
 
     this.incomesForm = new FormGroup({
       amount: new FormControl(''),
@@ -64,6 +69,12 @@ export class IncomesComponent {
         this.totalSummary += income.amount;
       }
     }
+  }
+
+  changeDate(date: any) {
+    this.selectedYear = date.year;
+    this.selectedMonth = date.month;
+    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth);
   }
 
   sum(arr: number[]) {

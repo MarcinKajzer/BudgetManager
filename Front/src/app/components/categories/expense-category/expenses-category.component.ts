@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { ExpenseCategory } from '../models/expenseCategory';
-import { CategoriesService } from '../services/expense-categories.service';
+import { ExpenseCategory } from '../../../models/expenseCategory';
+import { ExpenseCategoriesService } from '../../../services/expense-categories.service';
 
 @Component({
   selector: 'app-category',
@@ -22,7 +22,7 @@ export class ExpensesCategoryComponent {
   editedSubcategoryNewName?: string;
   displayAddNewSubcategoryForm: boolean = false;
 
-  constructor(private categoryService: CategoriesService) { }
+  constructor(private categoryService: ExpenseCategoriesService) { }
 
   showEditNameInput() {
     this.categoryNewName = this.category?.name;

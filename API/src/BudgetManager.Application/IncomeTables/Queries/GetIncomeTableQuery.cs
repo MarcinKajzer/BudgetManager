@@ -5,7 +5,7 @@ using Mediator;
 
 namespace BudgetManager.Application.IncomesTable.Queries
 {
-    public record GetIncomeTableQuery : IRequest<IEnumerable<GetIncomeTableResult>>;
+    public record GetIncomeTableQuery(int Year, int Month) : IRequest<IEnumerable<GetIncomeTableResult>>;
 
     public class GetIncomeTableResult : IRegister
     {
@@ -35,7 +35,7 @@ namespace BudgetManager.Application.IncomesTable.Queries
         
         public ValueTask<IEnumerable<GetIncomeTableResult>> Handle(GetIncomeTableQuery request, CancellationToken cancellationToken)
         {
-            var table = _repository.Get();
+            var table = _repository.Get(request.Year, request.Month);
             return new ValueTask<IEnumerable<GetIncomeTableResult>>(table.Adapt<GetIncomeTableResult[]>());
         }
     }

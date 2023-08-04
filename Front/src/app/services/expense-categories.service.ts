@@ -6,7 +6,7 @@ import { HttpClient } from "@angular/common/http";
 @Injectable({
   providedIn: 'root'
 })
-export class CategoriesService {
+export class ExpenseCategoriesService {
 
   apiUrl = 'https://localhost:7261/api'
 

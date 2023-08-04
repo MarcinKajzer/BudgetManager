@@ -1,10 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { UtilitiesService } from '../services/utilities.service';
+import { Component } from '@angular/core';
+import { UtilitiesService } from '../../services/utilities.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { CategoriesService } from '../services/expense-categories.service';
-import { ExpenseCategory } from '../models/expenseCategory';
-import { Expense } from '../models/expense';
-import { ExpensesService } from '../services/expenses.service';
+import { ExpenseCategoriesService } from '../../services/expense-categories.service';
+import { ExpenseCategory } from '../../models/expenseCategory';
+import { Expense } from '../../models/expense';
+import { ExpensesService } from '../../services/expenses.service';
 
 @Component({
   selector: 'app-expenses',
@@ -12,6 +12,10 @@ import { ExpensesService } from '../services/expenses.service';
   styleUrls: ['./expenses.component.scss']
 })
 export class ExpensesComponent {
+
+  date = new Date()
+  selectedYear: number = this.date.getFullYear();
+  selectedMonth: number = this.date.getMonth() + 1 ;
 
   numberOfDays = 30;
   days = Array.from({length: this.numberOfDays}, (_, index) => index + 1);
@@ -38,7 +42,7 @@ export class ExpensesComponent {
   editExpensesPopupXOffset: number = 0;
   editExpensesPopupYOffset: number = 0;
 
-  constructor(private utilitiesService: UtilitiesService, private categoriesService: CategoriesService, private expensesService: ExpensesService) {
+  constructor(private utilitiesService: UtilitiesService, private categoriesService: ExpenseCategoriesService, private expensesService: ExpensesService) {
     //safesub
     this.utilitiesService.getIsExpensesPopoverVisible().subscribe(isVisible => this.isEditExpensesPopupVisible = isVisible);
 
@@ -46,7 +50,7 @@ export class ExpensesComponent {
       this.prepareData(data);
       this.data = data
     });
-    this.expensesService.refreshExpenses(); //Wybór miesiąca i roku
+    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth);
 
     this.expensesForm = new FormGroup({
       amount: new FormControl(''),
@@ -71,6 +75,12 @@ export class ExpensesComponent {
         }
       }
     }
+  }
+
+  changeDate(date: any) {
+    this.selectedYear = date.year;
+    this.selectedMonth = date.month;
+    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth);
   }
 
   sum(arr: number[]) {
@@ -137,8 +147,7 @@ export class ExpensesComponent {
   }
 
   addExpense(event: any) {
-    const date = new Date();
-    date.setDate(this.selectedDay)
+    const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDay);
     this.expensesService.addExpense(this.selectedSubcategoryId!, event.target.value, date);
   }
 

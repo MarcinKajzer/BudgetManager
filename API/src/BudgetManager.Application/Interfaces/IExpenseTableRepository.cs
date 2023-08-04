@@ -4,6 +4,6 @@ namespace BudgetManager.Application.Interfaces
 {
     public interface IExpenseTableRepository
     {
-        IEnumerable<ExpenseCategory> Get();
+        IEnumerable<ExpenseCategory> Get(int year, int month);
     }
 }
