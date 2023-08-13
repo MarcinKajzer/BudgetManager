@@ -13,14 +13,14 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddSubcategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add(AddSubcategoryCommand command, CancellationToken cancellationToken)
         {
             var id = await _mediator.Send(command, cancellationToken);
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [FromBody] EditSubcategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(Guid id, EditSubcategoryCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();

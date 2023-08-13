@@ -31,7 +31,7 @@ public class GetExpenseHandler : IRequestHandler<GetExpenseQuery, GetExpenseResu
     }
     public async ValueTask<GetExpenseResult> Handle(GetExpenseQuery request, CancellationToken cancellationToken)
     {
-        var expense = await _repository.GetAsync(request.Id) ?? throw new NotFoundException();
+        var expense = await _repository.GetAsync(request.Id, cancellationToken) ?? throw new NotFoundException();
         return expense.Adapt<GetExpenseResult>();
     }
 }

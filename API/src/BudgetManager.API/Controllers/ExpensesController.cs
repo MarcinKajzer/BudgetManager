@@ -14,7 +14,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddExpenseCommand command, CancellationToken cancellationToken) //From body można pominąć bo jest [APiController]
+        public async Task<IActionResult> Add(AddExpenseCommand command, CancellationToken cancellationToken)
         {
             var id = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(Get), new { id }, new {id});
@@ -27,7 +27,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [FromBody] EditExpenseCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(Guid id, EditExpenseCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();

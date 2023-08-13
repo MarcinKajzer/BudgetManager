@@ -15,7 +15,7 @@ namespace BudgetManager.Application.Expenses.Commands
         }
         public async ValueTask<Unit> Handle(EditExpenseCommand request, CancellationToken cancellationToken)
         {
-            var expense = await _expenseRepository.GetAsync(request.Id) ?? throw new NotFoundException();
+            var expense = await _expenseRepository.GetAsync(request.Id, cancellationToken) ?? throw new NotFoundException();
 
             expense.Amount = request.Amount;
             expense.Comment = request.Comment;

@@ -15,10 +15,7 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<Expense?> GetAsync(Guid id)
-        {
-            return _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
-        }
+        public Task<Expense?> GetAsync(Guid id, CancellationToken cancellationToken) => _context.Expenses.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
         public async Task DeleteAsync(Expense expense, CancellationToken cancellationToken)
         {

@@ -12,7 +12,7 @@ namespace BudgetManager.API.Controllers
         public ExpenseCategoryController(IMediator mediator) : base(mediator) { }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody]AddExpenseCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add(AddExpenseCategoryCommand command, CancellationToken cancellationToken)
         {
             var id = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(Get), new { id }, null);
@@ -31,7 +31,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [FromBody]EditExpenseCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(Guid id, EditExpenseCategoryCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();

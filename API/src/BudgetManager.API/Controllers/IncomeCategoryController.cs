@@ -14,7 +14,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] AddIncomeCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Add(AddIncomeCategoryCommand command, CancellationToken cancellationToken)
         {
             var id = await _mediator.Send(command, cancellationToken);
             return CreatedAtAction(nameof(Get), new { id }, null);
@@ -33,7 +33,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, [FromBody] EditIncomeCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(Guid id, EditIncomeCategoryCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();
