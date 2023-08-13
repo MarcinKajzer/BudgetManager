@@ -30,6 +30,7 @@ app.UseCors(policyBuilder =>
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials()
+        .WithExposedHeaders("Location")
         .WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>() ?? Enumerable.Empty<string>().ToArray());
 });
 

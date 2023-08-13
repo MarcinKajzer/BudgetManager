@@ -4,5 +4,4 @@ export interface ExpenseCategory {
   id: string,
   name: string,
   subcategories: ExpenseSubcategory[];
-  dailyExpenses: number[];
 }

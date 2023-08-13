@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
-import { UtilitiesService } from '../../services/utilities.service';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ExpenseCategoriesService } from '../../services/expense-categories.service';
-import { ExpenseCategory } from '../../models/expenseCategory';
+import { ExpenseTableCategory } from 'src/app/models/expenseTableCategory';
 import { Expense } from '../../models/expense';
 import { ExpensesService } from '../../services/expenses.service';
+import { UtilitiesService } from '../../services/utilities.service';
 
 @Component({
   selector: 'app-expenses',
@@ -12,6 +11,10 @@ import { ExpensesService } from '../../services/expenses.service';
   styleUrls: ['./expenses.component.scss']
 })
 export class ExpensesComponent {
+
+  @ViewChild('amountInput', {static: false}) amountInputRef?: ElementRef;
+
+  amountInputFocused: boolean = false;
 
   date = new Date()
   selectedYear: number = this.date.getFullYear();
@@ -30,7 +33,7 @@ export class ExpensesComponent {
   newExpenseComment: any
   savingExpensesId?: string;
 
-  data?: ExpenseCategory[];
+  data?: ExpenseTableCategory[];
   dailySummary?: number[];
   totalSummary?: number;
 
@@ -42,7 +45,7 @@ export class ExpensesComponent {
   editExpensesPopupXOffset: number = 0;
   editExpensesPopupYOffset: number = 0;
 
-  constructor(private utilitiesService: UtilitiesService, private categoriesService: ExpenseCategoriesService, private expensesService: ExpensesService) {
+  constructor(private utilitiesService: UtilitiesService, private expensesService: ExpensesService) {
     //safesub
     this.utilitiesService.getIsExpensesPopoverVisible().subscribe(isVisible => this.isEditExpensesPopupVisible = isVisible);
 
@@ -58,7 +61,7 @@ export class ExpensesComponent {
     });
   }
 
-  prepareData(data: ExpenseCategory[]) {
+  prepareData(data: ExpenseTableCategory[]) {
     this.dailySummary = Array(this.numberOfDays).fill(0);
     this.totalSummary = 0;
     
@@ -75,6 +78,19 @@ export class ExpensesComponent {
         }
       }
     }
+
+    if (this.selectedCategoryId && this.selectedSubcategoryId && this.selectedDay) {
+      this.selectedDayExpenses = this.getExpensesForDay(this.selectedCategoryId, this.selectedSubcategoryId, this.selectedDay);
+      this.newExpenseAmount = null;
+      this.newExpenseComment = null;
+    }
+  }
+
+  ngAfterViewChecked() { // poprawić 
+    if (this.amountInputFocused && this.amountInputRef) {
+      this.amountInputRef.nativeElement.focus();
+      this.amountInputFocused = false;
+    } 
   }
 
   changeDate(date: any) {
@@ -147,15 +163,28 @@ export class ExpensesComponent {
   }
 
   addExpense(event: any) {
+    if (event.target.value == "") {
+      return
+    }
+
     const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDay);
     this.expensesService.addExpense(this.selectedSubcategoryId!, event.target.value, date);
   }
 
   updateExpenseAmount(event: any, expense: Expense) {
-    this.expensesService.updateExpense(expense.id, event.target.value, expense.comment);
+    if (event.target.value != expense.amount && event.target.value != "") { //obsłużyć wprowadzenie przez użytkownika pustego stringa w tabeli
+      this.expensesService.updateExpense(expense.id, event.target.value, expense.comment);
+    }
   }
 
   updateExpenseComment(event: any, expense: Expense) {
-    this.expensesService.updateExpense(expense.id, expense.amount, event.target.value);
+    if (event.target.value != expense.comment) {
+      this.expensesService.updateExpense(expense.id, expense.amount, event.target.value);
+    }
+  }
+
+  focusAmountInput() {
+    console.log("amount-focus")
+    this.amountInputFocused = true;
   }
 }

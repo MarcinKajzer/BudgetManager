@@ -1,5 +1,6 @@
 ﻿using BudgetManager.Application.Interfaces;
 using BudgetManager.Domain.Expenses;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetManager.Infrastructure.Persistence.Repositories
 {
@@ -14,9 +15,9 @@ namespace BudgetManager.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Expense? Get(Guid id)
+        public Task<Expense?> GetAsync(Guid id)
         {
-            return _context.Expenses.FirstOrDefault(e => e.Id == id);
+            return _context.Expenses.FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task DeleteAsync(Expense expense, CancellationToken cancellationToken)

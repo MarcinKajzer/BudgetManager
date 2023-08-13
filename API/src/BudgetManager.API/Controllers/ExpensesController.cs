@@ -1,4 +1,5 @@
 ﻿using BudgetManager.Application.Expenses.Commands;
+using BudgetManager.Application.Expenses.Queries;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,21 +16,27 @@ namespace BudgetManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddExpenseCommand command, CancellationToken cancellationToken) //From body można pominąć bo jest [APiController]
         {
-            return Ok(await _mediator.Send(command, cancellationToken));
+            var id = await _mediator.Send(command, cancellationToken);
+            return CreatedAtAction(nameof(Get), new { id }, new {id});
         }
 
-
-        [HttpPut("{id}")]
-        public IActionResult Edit(Guid id, [FromBody] EditExpenseCommand command, CancellationToken cancellationToken)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> Get(Guid id, CancellationToken cancellationToken)
         {
-            _mediator.Send(command with { Id = id }, cancellationToken);
+            return Ok(await _mediator.Send(new GetExpenseQuery(id), cancellationToken));
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Edit(Guid id, [FromBody] EditExpenseCommand command, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id, CancellationToken cancellationToken)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
         {
-            _mediator.Send(new DeleteExpenseCommand(id), cancellationToken);
+            await _mediator.Send(new DeleteExpenseCommand(id), cancellationToken);
             return NoContent();
         }
     }

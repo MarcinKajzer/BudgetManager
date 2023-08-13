@@ -11,19 +11,19 @@
         <div *ngFor="let exp of selectedDayExpenses; let i = index" class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateExpenseAmount($event, exp)">
             <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateExpenseComment($event, exp)"></textarea>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateExpenseComment($event, exp)" autofocus></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addExpense($event)" [(ngModel)]="newExpenseAmount">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addExpense($event)" [(ngModel)]="newExpenseAmount" #amountInput>
             <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newExpenseComment"></textarea>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newExpenseComment" [disabled]="newExpenseAmount == null"></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
         <div class="input-group mb-3" *ngIf="newExpenseAmount?.length > 0">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (focus)="focusAmountInput()">
             <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server"></textarea>
+            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" disabled></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
     </div>
