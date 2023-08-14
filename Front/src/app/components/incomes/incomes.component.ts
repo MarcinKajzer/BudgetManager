@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UtilitiesService } from '../../services/utilities.service';
 import { IncomesService } from '../../services/incomes.service';
-import { IncomeCategory } from '../../models/incomeCategory';
 import { Income } from '../../models/income';
+import { IncomeTableCategory } from 'src/app/models/incomeTableCategory';
 
 @Component({
   selector: 'app-incomes',
@@ -11,6 +11,10 @@ import { Income } from '../../models/income';
   styleUrls: ['./incomes.component.scss']
 })
 export class IncomesComponent {
+
+  @ViewChild('amountInput', {static: false}) amountInputRef?: ElementRef;
+
+  amountInputFocused: boolean = false;
 
   date = new Date()
   selectedYear: number = this.date.getFullYear();
@@ -28,7 +32,7 @@ export class IncomesComponent {
   newIncomeComment: any
   savingIncomeId?: string;
 
-  data?: IncomeCategory[];
+  data?: IncomeTableCategory[];
   dailySummary?: number[];
   totalSummary?: number;
 
@@ -56,19 +60,32 @@ export class IncomesComponent {
     });
   }
 
-  prepareData(data: IncomeCategory[]) {
+  prepareData(data: IncomeTableCategory[]) {
     this.dailySummary = Array(this.numberOfDays).fill(0);
     this.totalSummary = 0;
 
     for (const category of data) {
-      category.dailyExpenses = Array(this.numberOfDays).fill(0);
+      category.dailyIncomes = Array(this.numberOfDays).fill(0);
       for (const income of category.incomes) {
         const index = new Date(income.date).getDate() - 1
-        category.dailyExpenses[index] += income.amount;
+        category.dailyIncomes[index] += income.amount;
         this.dailySummary[index] += income.amount;
         this.totalSummary += income.amount;
       }
     }
+
+    if (this.selectedCategoryId && this.selectedDay) {
+      this.selectedDayExpenses = this.getIncomesForDay(this.selectedCategoryId, this.selectedDay);
+      this.newIncomeAmount = null;
+      this.newIncomeComment = null;
+    }
+  }
+
+  ngAfterViewChecked() { // poprawić 
+    if (this.amountInputFocused && this.amountInputRef) {
+      this.amountInputRef.nativeElement.focus();
+      this.amountInputFocused = false;
+    } 
   }
 
   changeDate(date: any) {
@@ -146,5 +163,10 @@ export class IncomesComponent {
 
   updateIncomeComment(event: any, income: Income) {
     this.incomesService.updateIncome(income.id, income.amount, event.target.value);
+  }
+
+  focusAmountInput() {
+    console.log("amount-focus")
+    this.amountInputFocused = true;
   }
 }

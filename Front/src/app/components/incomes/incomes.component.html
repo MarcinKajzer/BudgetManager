@@ -15,13 +15,13 @@
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addIncome($event)" [(ngModel)]="newIncomeAmount">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addIncome($event)" [(ngModel)]="newIncomeAmount" #amountInput>
             <span class="input-group-text">PLN</span>
             <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newIncomeComment"></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
         </div>
         <div class="input-group mb-3" *ngIf="newIncomeAmount?.length > 0">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username">
+            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (focus)="focusAmountInput()">
             <span class="input-group-text">PLN</span>
             <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server"></textarea>
             <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
@@ -43,12 +43,12 @@
         <tbody>
             <tr *ngFor="let category of data">
                 <td class="pt-0 pb-0">{{category.name}}</td>
-                <td *ngFor="let dailyExpense of category.dailyExpenses; let i = index" class="p-0 category-day" (click)="showEditIncomesPopup($event, category.id, i+1)" (mouseover)="showIncomesListPopup($event, category.id, i+1)">
+                <td *ngFor="let dailyExpense of category.dailyIncomes; let i = index" class="p-0 category-day" (click)="showEditIncomesPopup($event, category.id, i+1)" (mouseover)="showIncomesListPopup($event, category.id, i+1)">
                     <ng-container *ngIf="dailyExpense > 0">
                         {{dailyExpense}}
                     </ng-container>
                 </td>
-                <td class="p-0 table-warning">{{sum(category.dailyExpenses) > 0 ? sum(category.dailyExpenses) : ''}}</td>
+                <td class="p-0 table-warning">{{sum(category.dailyIncomes) > 0 ? sum(category.dailyIncomes) : ''}}</td>
             </tr>
             <tr class="table-warning">
                 <th class="pt-0 pb-0">SUM</th>

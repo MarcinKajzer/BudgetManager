@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { IncomeCategory } from '../models/incomeCategory';
+import { IncomeTableCategory } from '../models/incomeTableCategory';
+import { Income } from '../models/income';
 
 @Injectable({
   providedIn: 'root'
@@ -9,18 +11,25 @@ import { IncomeCategory } from '../models/incomeCategory';
 export class IncomesService {
 
   apiUrl = 'https://localhost:7261/api';
-  private incomes$: Subject<IncomeCategory[]>;
+
+  private incomesTable: IncomeTableCategory[]
+  private incomesTable$: Subject<IncomeTableCategory[]>;
 
   constructor(private httpClient: HttpClient) {
-    this.incomes$ = new Subject();
+    this.incomesTable = [];
+    this.incomesTable$ = new Subject();
   }
 
-  getIncomes(): Observable<IncomeCategory[]> {
-    return this.incomes$ as Observable<IncomeCategory[]>;
+  getIncomes(): Observable<IncomeTableCategory[]> {
+    return this.incomesTable$ as Observable<IncomeTableCategory[]>;
   }
 
   refreshIncomes(year: number, month: number): void {
-    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable?year=${year}&month=${month}`).subscribe(incomes => this.incomes$.next(incomes));
+    this.httpClient.get<IncomeTableCategory[]>(`${this.apiUrl}/incomeTable?year=${year}&month=${month}`)
+    .subscribe(incomes => {
+      this.incomesTable = incomes;
+      this.incomesTable$.next(incomes);
+    });
   }
 
   addIncome(categoryId: string, amount: number, date: Date) {
@@ -30,11 +39,18 @@ export class IncomesService {
       amount: +amount,
       comment: ''
     }
-    this.httpClient.post(`${this.apiUrl}/income/`, payload)
+    this.httpClient.post(`${this.apiUrl}/income/`, payload, { observe: 'response' })
       .pipe(
-        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`))
+        concatMap((res: any) => {
+          var location = res.headers.get("Location");
+          return this.httpClient.get<Income>(location);
+        })
       )
-      .subscribe(incomes => this.incomes$.next(incomes))
+      .subscribe((income: Income) => {
+        const subcategory = this.incomesTable.find(c => c.id == categoryId);
+        subcategory!.incomes.push(income);
+        this.incomesTable$.next(this.incomesTable);
+      })
   }
 
   updateIncome(incomeId: string, amount: number, comment: string) {
@@ -43,9 +59,12 @@ export class IncomesService {
       comment
     }
     this.httpClient.put(`${this.apiUrl}/income/${incomeId}`, payload)
-      .pipe(
-        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/incomeTable`))
-      )
-      .subscribe(incomes => this.incomes$.next(incomes))
+      .subscribe(() => {
+        const incomes = this.incomesTable.flatMap(i => i.incomes);
+        const income = incomes.find(i => i.id == incomeId);
+        income!.amount = +amount;
+        income!.comment = comment;
+        this.incomesTable$.next(this.incomesTable);
+      })
   }
 }

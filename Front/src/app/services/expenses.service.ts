@@ -27,7 +27,7 @@ export class ExpensesService {
     this.httpClient.get<ExpenseTableCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`)
       .subscribe(expenses => {
         this.expensesTable = expenses;
-        this.expensesTable$.next([...expenses])
+        this.expensesTable$.next(expenses)
       });
   }
 
@@ -48,7 +48,7 @@ export class ExpensesService {
       .subscribe((expense: Expense) => {
         const subcategory = this.expensesTable.flatMap(e => e.subcategories).find(s => s.id == subcategoryId);
         subcategory!.expenses.push(expense);
-        this.expensesTable$.next([...this.expensesTable]);
+        this.expensesTable$.next(this.expensesTable);
       }
     )
   }
