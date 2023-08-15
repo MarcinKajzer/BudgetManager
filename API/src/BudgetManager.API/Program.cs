@@ -1,8 +1,16 @@
 using BudgetManager.Application;
 using BudgetManager.Infrastructure;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Logging.AddConsole();
+
+//Log.Logger = new LoggerConfiguration()
+//        .ReadFrom.Configuration(builder.Configuration)
+//        .CreateLogger();
+//builder.Host.UseSerilog();
+
+builder.Host.UseSerilog((_, _, config) => config.ReadFrom.Configuration(builder.Configuration));
+
 // Add services to the container.
 
 builder.Services.AddControllers();
