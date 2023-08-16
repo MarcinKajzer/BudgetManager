@@ -1,5 +1,6 @@
 ﻿using BudgetManager.Domain.Expenses;
 using BudgetManager.Domain.Incomes;
+using BudgetManager.Domain.Users;
 using BudgetManager.Infrastructure.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -19,7 +20,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<ExpenseSubcategory> ExpenseSubcategory { get; set; }
     public DbSet<ExpenseCategory> ExpenseCategory { get; set; }
-
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

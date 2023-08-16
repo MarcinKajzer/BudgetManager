@@ -1,8 +1,11 @@
 ﻿using BudgetManager.Application.Interfaces;
+using BudgetManager.Application.Security;
 using BudgetManager.Infrastructure.Persistence;
 using BudgetManager.Infrastructure.Persistence.Interceptors;
 using BudgetManager.Infrastructure.Persistence.Repositories;
+using BudgetManager.Infrastructure.Security;
 using BudgetManager.Infrastructure.Services;
+using Microsoft.AspNet.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +32,12 @@ namespace BudgetManager.Infrastructure
             services.AddScoped<IIncomeTableRepository, IncomeTableRepository>();
             services.AddScoped<IExpenseTableRepository, ExpenseTableRepository>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
+
             services.AddSingleton<IDateTime, DateTimeService>();
+            services.AddSingleton<IPasswordHasher, PasswordHasher>();
+            services.AddSingleton<IPasswordManager, PasswordManager>();
+
             return services;
         }
     }
