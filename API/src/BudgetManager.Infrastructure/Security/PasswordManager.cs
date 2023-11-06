@@ -12,6 +12,6 @@ public class PasswordManager : IPasswordManager
     public string Hash(string password) => _hasher.HashPassword(password);
     
     public bool Validate(string password, string posswordHash)
-        => _hasher.VerifyHashedPassword(password, posswordHash) == PasswordVerificationResult.Success;
+        => _hasher.VerifyHashedPassword(posswordHash, password) == PasswordVerificationResult.Success;
     
 }
