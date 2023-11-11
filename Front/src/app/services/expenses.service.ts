@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
-import { ExpenseTableCategory } from '../models/expenseTableCategory';
-import { Expense } from '../models/expense';
+import { ExpenseTableCategory } from '../models/expense-table-category.type';
+import { Expense } from '../models/expense.type';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ExpensesService {
 
-  apiUrl = 'https://localhost:7261/api';
+  apiUrl = environment.apiUrl;
 
   private expensesTable: ExpenseTableCategory[];
   private expensesTable$: Subject<ExpenseTableCategory[]>;
@@ -24,7 +25,7 @@ export class ExpensesService {
   }
 
   refreshExpenses(year: number, month: number): void {
-    this.httpClient.get<ExpenseTableCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`)
+    this.httpClient.get<ExpenseTableCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`, {withCredentials: true})
       .subscribe(expenses => {
         this.expensesTable = expenses;
         this.expensesTable$.next(expenses)
@@ -38,7 +39,7 @@ export class ExpensesService {
       amount: +amount,
       comment: ''
     }
-    this.httpClient.post(`${this.apiUrl}/expenses/`, payload, { observe: 'response' })
+    this.httpClient.post(`${this.apiUrl}/expenses/`, payload, { observe: 'response', withCredentials: true })
       .pipe(
         concatMap((res: any) => {
           var location = res.headers.get("Location");
@@ -58,7 +59,7 @@ export class ExpensesService {
       amount: +amount,
       comment
     }
-    this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload)
+    this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload, {withCredentials: true})
       .subscribe(() => {
         const expenses = this.expensesTable.flatMap(e => e.subcategories).flatMap(s => s.expenses);
         const expense = expenses.find(e => e.id == expenseId);

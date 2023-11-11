@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { IncomeCategory } from '../models/incomeCategory';
+import { IncomeCategory } from '../models/income-category.type';
 import { Observable, Subject, concatMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncomeCategoriesService {
 
-  apiUrl = 'https://localhost:7261/api'
+  apiUrl = environment.apiUrl;
 
   private categories$: Subject<IncomeCategory[]>;
 
@@ -21,7 +22,7 @@ export class IncomeCategoriesService {
   }
 
   refreshCategory(): void {
-    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`).subscribe(categories => this.categories$.next(categories));
+    this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`, {withCredentials: true}).subscribe(categories => this.categories$.next(categories));
   }
 
   //Podejście z pobieraniem wszystkich kategorii za każdym razem (proste i powtarzalne rozwiązanie), ale nie najlepsze (doładowywać tylko to co się zmieniło)
@@ -29,9 +30,9 @@ export class IncomeCategoriesService {
     const payload = {
       name: categoryName
     }
-    this.httpClient.post(`${this.apiUrl}/IncomeCategory`, payload)
+    this.httpClient.post(`${this.apiUrl}/IncomeCategory`, payload, {withCredentials: true})
       .pipe(
-        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`))
+        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`, {withCredentials: true}))
       )
       .subscribe(categories => this.categories$.next(categories))
   }
@@ -40,9 +41,9 @@ export class IncomeCategoriesService {
     const payload = {
       name
     }
-    this.httpClient.put(`${this.apiUrl}/IncomeCategory/${id}`, payload)
+    this.httpClient.put(`${this.apiUrl}/IncomeCategory/${id}`, payload, {withCredentials: true})
       .pipe(
-        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`))
+        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`, {withCredentials: true}))
       )
       .subscribe(categories => this.categories$.next(categories))
   }
@@ -50,7 +51,7 @@ export class IncomeCategoriesService {
   deleteCategory(id: string) {
     this.httpClient.delete(`${this.apiUrl}/IncomeCategory/${id}`)
       .pipe(
-        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`))
+        concatMap(() => this.httpClient.get<IncomeCategory[]>(`${this.apiUrl}/IncomeCategory`, {withCredentials: true}))
       )
       .subscribe(categories => this.categories$.next(categories))
   }

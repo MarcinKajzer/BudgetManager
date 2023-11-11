@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IncomeCategory } from '../models/incomeCategory';
-import { IncomeTableCategory } from '../models/incomeTableCategory';
-import { Income } from '../models/income';
+import { IncomeCategory } from '../models/income-category.type';
+import { IncomeTableCategory } from '../models/income-table-category.type';
+import { Income } from '../models/income.type';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class IncomesService {
 
-  apiUrl = 'https://localhost:7261/api';
+  apiUrl = environment.apiUrl;
 
   private incomesTable: IncomeTableCategory[]
   private incomesTable$: Subject<IncomeTableCategory[]>;
@@ -25,7 +26,7 @@ export class IncomesService {
   }
 
   refreshIncomes(year: number, month: number): void {
-    this.httpClient.get<IncomeTableCategory[]>(`${this.apiUrl}/incomeTable?year=${year}&month=${month}`)
+    this.httpClient.get<IncomeTableCategory[]>(`${this.apiUrl}/incomeTable?year=${year}&month=${month}`, {withCredentials: true})
     .subscribe(incomes => {
       this.incomesTable = incomes;
       this.incomesTable$.next(incomes);
@@ -39,7 +40,7 @@ export class IncomesService {
       amount: +amount,
       comment: ''
     }
-    this.httpClient.post(`${this.apiUrl}/income/`, payload, { observe: 'response' })
+    this.httpClient.post(`${this.apiUrl}/income/`, payload, { observe: 'response', withCredentials: true})
       .pipe(
         concatMap((res: any) => {
           var location = res.headers.get("Location");
@@ -58,7 +59,7 @@ export class IncomesService {
       amount: +amount,
       comment
     }
-    this.httpClient.put(`${this.apiUrl}/income/${incomeId}`, payload)
+    this.httpClient.put(`${this.apiUrl}/income/${incomeId}`, payload, {withCredentials: true})
       .subscribe(() => {
         const incomes = this.incomesTable.flatMap(i => i.incomes);
         const income = incomes.find(i => i.id == incomeId);

@@ -11,14 +11,26 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExpensesCategoryComponent } from './components/categories/expense-category/expenses-category.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { IncomesComponent } from './components/incomes/incomes.component';
 import { DateSelectorComponent } from './components/shared/date-selector/date-selector.component';
 import { ExpenseCategoriesListComponent } from './components/categories/expense-categories-list/expenses-categories-list.component';
 import { IncomeCategoriesListComponent } from './components/categories/income-categories-list/income-categories-list.component';
 import { IncomeCategoryComponent } from './components/categories/income-category/income-category.component';
+import { LoginComponent as SignInComponent } from './components/auth/login/login.component';
+import { RegisterComponent as SignUpComponent } from './components/auth/register/register.component';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
 
 const routes = [
+  {
+    path: 'signin',
+    component: SignInComponent
+  },
+  {
+    path: 'signup',
+    component: SignUpComponent
+  },
   {
     path: 'expenses',
     component: ExpensesComponent
@@ -49,7 +61,9 @@ const routes = [
     DateSelectorComponent,
     ExpenseCategoriesListComponent,
     IncomeCategoriesListComponent,
-    IncomeCategoryComponent
+    IncomeCategoryComponent,
+    SignInComponent,
+    SignUpComponent
   ],
   imports: [
     BrowserModule,
@@ -58,9 +72,14 @@ const routes = [
     FormsModule,
     NgbModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({})
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    JwtHelperService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

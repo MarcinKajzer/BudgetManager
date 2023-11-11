@@ -1,4 +1,4 @@
-import { ExpenseTableSubcategory } from "./expenseTableSubcategroy";
+import { ExpenseTableSubcategory } from "./expense-table-subcategory.type";
 
 export interface ExpenseTableCategory {
   id: string,

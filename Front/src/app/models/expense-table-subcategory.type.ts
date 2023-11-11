@@ -1,4 +1,4 @@
-import { Expense } from "./expense";
+import { Expense } from "./expense.type";
 
 export interface ExpenseTableSubcategory {
   id: string,

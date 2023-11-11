@@ -1,4 +1,4 @@
-import { Income } from "./income";
+import { Income } from "./income.type";
 
 export interface IncomeTableCategory {
   id: string,
