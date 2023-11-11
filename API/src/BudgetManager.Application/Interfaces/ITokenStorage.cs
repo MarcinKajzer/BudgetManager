@@ -1,6 +1,9 @@
-﻿namespace BudgetManager.Application.Interfaces;
+﻿using BudgetManager.Application.Auth.Models;
+
+namespace BudgetManager.Application.Interfaces;
 public interface ITokenStorage
 {
-    string GetToken();
-    void SetToken(string token);
+    void SetAccessToken(string token);
+    void SetRefreshToken(string token);
+    TokenModel GetTokens();
 }

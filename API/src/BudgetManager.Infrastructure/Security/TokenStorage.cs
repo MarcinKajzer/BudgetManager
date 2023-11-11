@@ -1,18 +1,20 @@
-﻿using BudgetManager.Application.Interfaces;
+﻿using BudgetManager.Application.Auth.Models;
+using BudgetManager.Application.Interfaces;
 
 namespace BudgetManager.Infrastructure.Security;
 public class TokenStorage : ITokenStorage
 {
-    private string _token;
+    private TokenModel _tokens = new TokenModel();
 
-    //Probably token will be saved in diferent place, so get and set is used
-    public string GetToken()
+    public void SetAccessToken(string token)
     {
-        return _token;
+        _tokens.AccessToken = token;
     }
 
-    public void SetToken(string token)
+    public void SetRefreshToken(string token)
     {
-        _token = token;
+        _tokens.RefreshToken = token;
     }
+
+    public TokenModel GetTokens() => _tokens;
 }

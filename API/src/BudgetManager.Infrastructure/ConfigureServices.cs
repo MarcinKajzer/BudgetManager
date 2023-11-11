@@ -43,7 +43,7 @@ namespace BudgetManager.Infrastructure
             services.AddSingleton<IPasswordManager, PasswordManager>();
 
             services.AddScoped<ITokenStorage, TokenStorage>();
-            services.AddScoped<ITokenGenerator, JwtGenerator>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.Configure<AuthOptions>(configuration.GetRequiredSection(AuthOptions.Section));
 
@@ -59,6 +59,7 @@ namespace BudgetManager.Infrastructure
                 options.Audience = authOptions.Audience;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateLifetime = true,
                     ValidIssuer = authOptions.Issuer,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions.Key)),
                     ValidateIssuerSigningKey = true

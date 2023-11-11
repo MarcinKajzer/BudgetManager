@@ -8,4 +8,5 @@ internal class AuthOptions
     public string Audience { get; set; }
     public int ExpiryHours { get; set; }
     public string Key { get; set; }
+    public int RefreshTokenValidInDays { get; set; }
 }

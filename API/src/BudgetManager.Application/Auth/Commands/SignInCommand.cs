@@ -2,6 +2,8 @@
 using BudgetManager.Application.Interfaces;
 using BudgetManager.Application.Security;
 using Mediator;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace BudgetManager.Application.Auth.Commands;
 
@@ -11,10 +13,10 @@ public class SignInHandler : ICommandHandler<SignInCommand>
 {
     private readonly IUserRepository _repository;
     private readonly IPasswordManager _passwordManager;
-    private readonly ITokenGenerator _tokenGenerator;
+    private readonly ITokenService _tokenGenerator;
     private readonly ITokenStorage _tokenStorage;
 
-    public SignInHandler(IUserRepository repository, IPasswordManager passwordManager, ITokenGenerator tokenGenerator, ITokenStorage tokenStorage)
+    public SignInHandler(IUserRepository repository, IPasswordManager passwordManager, ITokenService tokenGenerator, ITokenStorage tokenStorage)
     {
         _repository = repository;
         _passwordManager = passwordManager;
@@ -30,7 +32,14 @@ public class SignInHandler : ICommandHandler<SignInCommand>
             throw new InvalidSignInDataException();
         }
 
-        _tokenStorage.SetToken(_tokenGenerator.Generate());
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Name, user.Email),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        };
+
+        _tokenStorage.SetAccessToken(_tokenGenerator.GenerateAccessToken(claims));
+        _tokenStorage.SetRefreshToken(_tokenGenerator.GenerateRefreshToken());
 
         return Unit.Value;
     } 

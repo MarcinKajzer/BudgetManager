@@ -1,4 +1,6 @@
+using BudgetManager.API;
 using BudgetManager.Application;
+using BudgetManager.Application.Interfaces;
 using BudgetManager.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -46,6 +48,9 @@ builder.Services.AddSwaggerGen(
             }
         });
     });
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);

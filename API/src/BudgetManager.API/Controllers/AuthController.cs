@@ -24,12 +24,20 @@ public class AuthController : ApplicationControllerBase
     public async Task<IActionResult> SignIn(SignInCommand command, CancellationToken cancellationToken)
     {
         await _mediator.Send(command, cancellationToken);
-        return Ok(_tokenStorage.GetToken());
+        return Ok(_tokenStorage.GetTokens());
     }
 
-    //public async Task<IActionResult> Logout(CancellationToken cancellationToken)
-    //{
-    //    await _mediator.Send(command, cancellationToken);
-    //    return NoContent();
-    //}
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken(RefreshAccessTokenCommand command, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _mediator.Send(command, cancellationToken);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Unauthorized();
+        }
+        return Ok(_tokenStorage.GetTokens());
+    }
 }
