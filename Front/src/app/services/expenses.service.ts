@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
-import { ExpenseTableCategory } from '../models/expense-table-category.type';
-import { Expense } from '../models/expense.type';
+import { ExpenseTableCategory } from '../types/expense-table-category.type';
+import { Expense } from '../types/expense.type';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

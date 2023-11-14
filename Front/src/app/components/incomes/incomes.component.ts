@@ -2,8 +2,8 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UtilitiesService } from '../../services/utilities.service';
 import { IncomesService } from '../../services/incomes.service';
-import { Income } from '../../models/income.type';
-import { IncomeTableCategory } from 'src/app/models/income-table-category.type';
+import { Income } from '../../types/income.type';
+import { IncomeTableCategory } from 'src/app/types/income-table-category.type';
 
 @Component({
   selector: 'app-incomes',

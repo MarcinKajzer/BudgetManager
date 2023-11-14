@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, Subject, concatMap } from "rxjs";
-import { ExpenseCategory } from "../models/expense-category.type";
+import { ExpenseCategory } from "../types/expense-category.type";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 

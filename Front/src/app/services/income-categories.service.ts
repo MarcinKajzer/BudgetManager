@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IncomeCategory } from '../models/income-category.type';
+import { IncomeCategory } from '../types/income-category.type';
 import { Observable, Subject, concatMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';

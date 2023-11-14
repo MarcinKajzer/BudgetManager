@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IncomeCategory } from 'src/app/models/income-category.type';
+import { IncomeCategory } from 'src/app/types/income-category.type';
 import { IncomeCategoriesService } from 'src/app/services/income-categories.service';
 
 @Component({

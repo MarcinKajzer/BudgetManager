@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { SignIn } from '../models/sign-in.type';
-import { SignUp } from '../models/sign-up.type';
+import { SignIn } from '../types/sign-in.type';
+import { SignUp } from '../types/sign-up.type';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, Observable, filter } from 'rxjs';
 import { Router } from '@angular/router';
-import { Tokens } from '../models/tokens.type';
+import { Tokens } from '../types/tokens.type';
 
 
 @Injectable({

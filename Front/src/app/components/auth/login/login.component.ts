@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SignIn } from 'src/app/models/sign-in.type';
+import { SignIn } from 'src/app/types/sign-in.type';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ExpenseTableCategory } from 'src/app/models/expense-table-category.type';
-import { Expense } from '../../models/expense.type';
+import { ExpenseTableCategory } from 'src/app/types/expense-table-category.type';
+import { Expense } from '../../types/expense.type';
 import { ExpensesService } from '../../services/expenses.service';
 import { UtilitiesService } from '../../services/utilities.service';
 
