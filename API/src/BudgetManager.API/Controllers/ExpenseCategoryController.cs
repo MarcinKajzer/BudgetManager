@@ -1,12 +1,14 @@
 ﻿using BudgetManager.Application.Categories.Commands;
 using BudgetManager.Application.Categories.Queries;
 using Mediator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ExpenseCategoryController : ApplicationControllerBase
     {
         public ExpenseCategoryController(IMediator mediator) : base(mediator) { }
