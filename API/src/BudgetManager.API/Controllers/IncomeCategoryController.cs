@@ -35,7 +35,7 @@ namespace BudgetManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Edit(Guid id, EditIncomeCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update(Guid id, UpdateIncomeCategoryCommand command, CancellationToken cancellationToken)
         {
             await _mediator.Send(command with { Id = id }, cancellationToken);
             return NoContent();

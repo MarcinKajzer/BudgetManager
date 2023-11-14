@@ -4,16 +4,16 @@ using Mediator;
 
 namespace BudgetManager.Application.Expenses.Commands
 {
-    public record EditExpenseCommand(Guid Id, decimal Amount, string Comment) : IRequest<Unit>;
+    public record UpdateExpenseCommand(Guid Id, decimal Amount, string Comment) : IRequest<Unit>;
 
-    public class EditExpenseHandler : IRequestHandler<EditExpenseCommand, Unit>
+    public class UpdateExpenseHandler : IRequestHandler<UpdateExpenseCommand, Unit>
     {
         private readonly IExpenseRepository _expenseRepository;
-        public EditExpenseHandler(IExpenseRepository expenseRepository)
+        public UpdateExpenseHandler(IExpenseRepository expenseRepository)
         {
             _expenseRepository = expenseRepository;
         }
-        public async ValueTask<Unit> Handle(EditExpenseCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
         {
             var expense = await _expenseRepository.GetAsync(request.Id, cancellationToken) ?? throw new NotFoundException();
 

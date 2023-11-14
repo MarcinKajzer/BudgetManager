@@ -4,17 +4,17 @@ using Mediator;
 
 namespace BudgetManager.Application.Subcategories.Commands
 {
-    public record EditSubcategoryCommand(Guid Id, string Name) : IRequest<Unit>;
+    public record UpdateSubcategoryCommand(Guid Id, string Name) : IRequest<Unit>;
 
-    public class EditSubcategoryHandler : IRequestHandler<EditSubcategoryCommand, Unit>
+    public class UpdateSubcategoryHandler : IRequestHandler<UpdateSubcategoryCommand, Unit>
     {
         private readonly IExpenseSubcategoryRepository _repository;
 
-        public EditSubcategoryHandler(IExpenseSubcategoryRepository repository)
+        public UpdateSubcategoryHandler(IExpenseSubcategoryRepository repository)
         {
             _repository = repository;
         }
-        public async ValueTask<Unit> Handle(EditSubcategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(UpdateSubcategoryCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _repository.Get(request.Id) ?? throw new NotFoundException();
             subcategory.Name = request.Name;
