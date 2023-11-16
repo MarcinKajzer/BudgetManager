@@ -30,14 +30,7 @@ public class AuthController : ApplicationControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken(RefreshAccessTokenCommand command, CancellationToken cancellationToken)
     {
-        try
-        {
-            await _mediator.Send(command, cancellationToken);
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Unauthorized();
-        }
+        await _mediator.Send(command, cancellationToken);
         return Ok(_tokenStorage.GetTokens());
     }
 }

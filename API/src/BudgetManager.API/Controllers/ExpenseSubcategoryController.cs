@@ -1,4 +1,5 @@
-﻿using BudgetManager.Application.Subcategories.Commands;
+﻿using BudgetManager.Application.ExpenseSubcategories.Commands;
+using BudgetManager.Application.Interfaces;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,15 @@ namespace BudgetManager.API.Controllers
     [Authorize]
     public class ExpenseSubcategoryController : ApplicationControllerBase
     {
-        public ExpenseSubcategoryController(IMediator mediator) : base(mediator)
-        {
-        }
+        private readonly IIdStorage _idStorage;
+
+        public ExpenseSubcategoryController(IMediator mediator, IIdStorage idStorage) : base(mediator) => _idStorage = idStorage;
 
         [HttpPost]
         public async Task<IActionResult> Add(AddSubcategoryCommand command, CancellationToken cancellationToken)
         {
-            var id = await _mediator.Send(command, cancellationToken);
-            return NoContent();
+            await _mediator.Send(command, cancellationToken);
+            return Ok(_idStorage.GetId());
         }
 
         [HttpPut("{id:guid}")]

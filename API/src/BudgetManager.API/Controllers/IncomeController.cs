@@ -1,5 +1,6 @@
 ﻿using BudgetManager.Application.Incomes.Commands;
 using BudgetManager.Application.Incomes.Queries;
+using BudgetManager.Application.Interfaces;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,15 @@ namespace BudgetManager.API.Controllers
     [Authorize]
     public class IncomeController : ApplicationControllerBase
     {
-        public IncomeController(IMediator mediator) : base(mediator)
-        {
-        }
+        private readonly IIdStorage _idStorage;
+
+        public IncomeController(IMediator mediator, IIdStorage idStorage) : base(mediator) => _idStorage = idStorage;
 
         [HttpPost]
         public async Task<IActionResult> Add(AddIncomeCommand command, CancellationToken cancellationToken)
         {
-            var id = await _mediator.Send(command, cancellationToken);
-            return CreatedAtAction(nameof(Get), new { id }, null);
+            await _mediator.Send(command, cancellationToken);
+            return Ok(_idStorage.GetId());
         }
 
         [HttpGet("{id:guid}")]

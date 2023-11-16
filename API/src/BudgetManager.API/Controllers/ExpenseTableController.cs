@@ -10,9 +10,7 @@ namespace BudgetManager.API.Controllers
     [Authorize]
     public class ExpenseTableController : ApplicationControllerBase
     {
-        public ExpenseTableController(IMediator mediator) : base(mediator)
-        {
-        }
+        public ExpenseTableController(IMediator mediator) : base(mediator) { }
 
         [HttpGet]
         public async Task<IActionResult> Get(int Year, int Month, CancellationToken cancellationToken)
