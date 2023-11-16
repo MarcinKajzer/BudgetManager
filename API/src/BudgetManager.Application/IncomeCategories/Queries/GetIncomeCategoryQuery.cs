@@ -12,6 +12,7 @@ namespace BudgetManager.Application.IncomeCategories.Queries
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int Index { get; set; }
 
         public void Register(TypeAdapterConfig config)
         {

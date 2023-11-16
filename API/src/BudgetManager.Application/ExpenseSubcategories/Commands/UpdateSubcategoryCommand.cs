@@ -2,7 +2,7 @@
 using BudgetManager.Application.Interfaces;
 using Mediator;
 
-namespace BudgetManager.Application.Subcategories.Commands
+namespace BudgetManager.Application.ExpenseSubcategories.Commands
 {
     public record UpdateSubcategoryCommand(Guid Id, string Name) : IRequest<Unit>;
 
@@ -10,10 +10,8 @@ namespace BudgetManager.Application.Subcategories.Commands
     {
         private readonly IExpenseSubcategoryRepository _repository;
 
-        public UpdateSubcategoryHandler(IExpenseSubcategoryRepository repository)
-        {
-            _repository = repository;
-        }
+        public UpdateSubcategoryHandler(IExpenseSubcategoryRepository repository) => _repository = repository;
+        
         public async ValueTask<Unit> Handle(UpdateSubcategoryCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _repository.Get(request.Id) ?? throw new NotFoundException();

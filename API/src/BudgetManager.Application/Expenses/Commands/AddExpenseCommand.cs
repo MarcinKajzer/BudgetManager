@@ -5,18 +5,21 @@ using Mediator;
 
 namespace BudgetManager.Application.Expenses.Commands
 {
-    public record AddExpenseCommand(Guid SubcategoryId, DateTime Date, decimal Amount, string Comment) : IRequest<Guid>;
+    public record AddExpenseCommand(Guid SubcategoryId, DateTime Date, decimal Amount, string Comment) : ICommand;
 
-    public class AddExpnseHandler : IRequestHandler<AddExpenseCommand, Guid>
+    public class AddExpenseHandler : ICommandHandler<AddExpenseCommand>
     {
         private readonly IExpenseSubcategoryRepository _subcategoryRepository;
         private readonly IExpenseRepository _expenseRepository;
-        public AddExpnseHandler(IExpenseSubcategoryRepository subcategoryRepository, IExpenseRepository expenseRepository)
+        private readonly IIdStorage _idStorage;
+        
+        public AddExpenseHandler(IExpenseSubcategoryRepository subcategoryRepository, IExpenseRepository expenseRepository, IIdStorage idStorage)
         {
             _subcategoryRepository = subcategoryRepository;
             _expenseRepository = expenseRepository;
+            _idStorage = idStorage;
         }
-        public async ValueTask<Guid> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(AddExpenseCommand request, CancellationToken cancellationToken)
         {
             var subcategory = _subcategoryRepository.Get(request.SubcategoryId) ?? throw new NotFoundException();
 
@@ -29,7 +32,9 @@ namespace BudgetManager.Application.Expenses.Commands
             };
 
             await _expenseRepository.CreateAsync(expense, cancellationToken);
-            return expense.Id;
+            _idStorage.SetId((expense.Id));
+            
+            return Unit.Value;
         }
     }
 }

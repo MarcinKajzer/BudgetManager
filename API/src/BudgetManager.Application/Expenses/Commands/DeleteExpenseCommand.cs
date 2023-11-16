@@ -4,9 +4,9 @@ using Mediator;
 
 namespace BudgetManager.Application.Expenses.Commands
 {
-    public record DeleteExpenseCommand(Guid Id) : IRequest<Unit>;
+    public record DeleteExpenseCommand(Guid Id) : ICommand;
 
-    public class DeleteExpenseHandler : IRequestHandler<DeleteExpenseCommand, Unit>
+    public class DeleteExpenseHandler : ICommandHandler<DeleteExpenseCommand>
     {
         private readonly IExpenseRepository _repository;
         public DeleteExpenseHandler(IExpenseRepository repository)

@@ -4,16 +4,20 @@ using Mediator;
 
 namespace BudgetManager.Application.IncomeCategories.Commands
 {
-    public record AddIncomeCategoryCommand(string Name) : IRequest<Guid>;
+    public record AddIncomeCategoryCommand(string Name) : ICommand;
 
-    public class AddIncomeCategoryHandler : IRequestHandler<AddIncomeCategoryCommand, Guid>
+    public class AddIncomeCategoryHandler : ICommandHandler<AddIncomeCategoryCommand>
     {
         private readonly IIncomeCategoryRepository _repository;
-        public AddIncomeCategoryHandler(IIncomeCategoryRepository repository)
+        private readonly IIdStorage _idStorage;
+        
+        public AddIncomeCategoryHandler(IIncomeCategoryRepository repository, IIdStorage idStorage)
         {
             _repository = repository;
+            _idStorage = idStorage;
         }
-        public async ValueTask<Guid> Handle(AddIncomeCategoryCommand request, CancellationToken cancellationToken)
+        
+        public async ValueTask<Unit> Handle(AddIncomeCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = new IncomeCategory
             {
@@ -21,7 +25,9 @@ namespace BudgetManager.Application.IncomeCategories.Commands
             };
 
             await _repository.CreateAsync(category, cancellationToken);
-            return category.Id;
+            _idStorage.SetId(category.Id);    
+            
+            return Unit.Value;
         }
     }
 }

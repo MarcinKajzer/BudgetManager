@@ -4,17 +4,14 @@ using Mediator;
 
 namespace BudgetManager.Application.IncomeCategories.Commands
 {
-    public record DeleteIncomeCategoryCommand(Guid Id) : IRequest<Unit>;
+    public record DeleteIncomeCategoryCommand(Guid Id) : ICommand;
 
-    public class DeleteIncomeCategoryHandler : IRequestHandler<DeleteIncomeCategoryCommand, Unit>
+    public class DeleteIncomeCategoryHandler : ICommandHandler<DeleteIncomeCategoryCommand>
     {
         private readonly IIncomeCategoryRepository _repository;
 
-        public DeleteIncomeCategoryHandler(IIncomeCategoryRepository repository)
-        {
-            _repository = repository;
-        }
-
+        public DeleteIncomeCategoryHandler(IIncomeCategoryRepository repository) => _repository = repository;
+        
         public async ValueTask<Unit> Handle(DeleteIncomeCategoryCommand request, CancellationToken cancellationToken)
         {
             //Polityka usuwania - jeśli dana kategoria ma już zapisane wydatki - soft delete, usunięcie z listy, nie pokazywanie w nowych misiącach

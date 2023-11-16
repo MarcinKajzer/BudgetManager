@@ -2,19 +2,21 @@
 using BudgetManager.Domain.Expenses;
 using Mediator;
 
-namespace BudgetManager.Application.Categories.Commands
+namespace BudgetManager.Application.ExpenseCategories.Commands
 {
-    public record AddExpenseCategoryCommand(string Name) : IRequest<Guid>;
+    public record AddExpenseCategoryCommand(string Name) : ICommand;
 
-    public class AddExpenseCategoryHandler : IRequestHandler<AddExpenseCategoryCommand, Guid>
+    public class AddExpenseCategoryHandler : ICommandHandler<AddExpenseCategoryCommand>
     {
         private readonly IExpenseCategoryRepository _repository;
-        public AddExpenseCategoryHandler(IExpenseCategoryRepository repository)
+        private readonly IIdStorage _idStorage;
+        public AddExpenseCategoryHandler(IExpenseCategoryRepository repository, IIdStorage idStorage)
         {
             _repository = repository;
+            _idStorage = idStorage;
         }
 
-        public async ValueTask<Guid> Handle(AddExpenseCategoryCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(AddExpenseCategoryCommand request, CancellationToken cancellationToken)
         {
             var category = new ExpenseCategory
             {
@@ -22,7 +24,9 @@ namespace BudgetManager.Application.Categories.Commands
             };
 
             await _repository.CreateAsync(category, cancellationToken);
-            return category.Id;
+            _idStorage.SetId(category.Id);
+
+            return Unit.Value;
         }
     }
 }

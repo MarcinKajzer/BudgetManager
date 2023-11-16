@@ -5,18 +5,22 @@ using Mediator;
 
 namespace BudgetManager.Application.Incomes.Commands
 {
-    public record AddIncomeCommand(Guid CategoryId, DateTime Date, decimal Amount, string Comment) : IRequest<Guid>;
+    public record AddIncomeCommand(Guid CategoryId, DateTime Date, decimal Amount, string Comment) : ICommand;
 
-    public class AddIncomeHandler : IRequestHandler<AddIncomeCommand, Guid>
+    public class AddIncomeHandler : ICommandHandler<AddIncomeCommand>
     {
         private readonly IIncomeCategoryRepository _categoryRepository;
         private readonly IIncomeRepository _incomeRepository;
-        public AddIncomeHandler(IIncomeCategoryRepository categoryRepository, IIncomeRepository incomeRepository)
+        private readonly IIdStorage _idStorage;
+
+        public AddIncomeHandler(IIncomeCategoryRepository categoryRepository, IIncomeRepository incomeRepository, IIdStorage idStorage)
         {
             _categoryRepository = categoryRepository;
             _incomeRepository = incomeRepository;
+            _idStorage = idStorage;
         }
-        public async ValueTask<Guid> Handle(AddIncomeCommand request, CancellationToken cancellationToken)
+
+        public async ValueTask<Unit> Handle(AddIncomeCommand request, CancellationToken cancellationToken)
         {
             var category = _categoryRepository.Get(request.CategoryId) ?? throw new NotFoundException();
 
@@ -29,7 +33,9 @@ namespace BudgetManager.Application.Incomes.Commands
             };
 
             await _incomeRepository.CreateAsync(income, cancellationToken);
-            return income.Id;
+            _idStorage.SetId(category.Id);
+            
+            return Unit.Value;
         }
     }
 }

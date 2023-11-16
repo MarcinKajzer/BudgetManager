@@ -4,9 +4,9 @@ using Mediator;
 
 namespace BudgetManager.Application.Expenses.Commands
 {
-    public record UpdateExpenseCommand(Guid Id, decimal Amount, string Comment) : IRequest<Unit>;
+    public record UpdateExpenseCommand(Guid Id, decimal Amount, string Comment) : ICommand;
 
-    public class UpdateExpenseHandler : IRequestHandler<UpdateExpenseCommand, Unit>
+    public class UpdateExpenseHandler : ICommandHandler<UpdateExpenseCommand>
     {
         private readonly IExpenseRepository _expenseRepository;
         public UpdateExpenseHandler(IExpenseRepository expenseRepository)

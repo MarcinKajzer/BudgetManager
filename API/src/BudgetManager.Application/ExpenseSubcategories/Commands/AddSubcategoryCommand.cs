@@ -3,20 +3,24 @@ using BudgetManager.Application.Interfaces;
 using BudgetManager.Domain.Expenses;
 using Mediator;
 
-namespace BudgetManager.Application.Subcategories.Commands
+namespace BudgetManager.Application.ExpenseSubcategories.Commands
 {
-    public record AddSubcategoryCommand(Guid CategoryId, string Name) : IRequest<Guid>;
+    public record AddSubcategoryCommand(Guid CategoryId, string Name) : ICommand;
 
-    public class AddSubcategoryHandler : IRequestHandler<AddSubcategoryCommand, Guid>
+    public class AddSubcategoryHandler : ICommandHandler<AddSubcategoryCommand>
     {
         private readonly IExpenseCategoryRepository _categoryRepository;
         private readonly IExpenseSubcategoryRepository _subcategoryRepository;
-        public AddSubcategoryHandler(IExpenseCategoryRepository categoryRepository, IExpenseSubcategoryRepository repository)
+        private readonly IIdStorage _idStorage;
+        
+        public AddSubcategoryHandler(IExpenseCategoryRepository categoryRepository, IExpenseSubcategoryRepository repository, IIdStorage idStorage)
         {
             _categoryRepository = categoryRepository;
             _subcategoryRepository = repository;
+            _idStorage = idStorage;
         }
-        public async ValueTask<Guid> Handle(AddSubcategoryCommand request, CancellationToken cancellationToken)
+
+        public async ValueTask<Unit> Handle(AddSubcategoryCommand request, CancellationToken cancellationToken)
         {
             var category = _categoryRepository.Get(request.CategoryId) ?? throw new NotFoundException();
 
@@ -27,8 +31,9 @@ namespace BudgetManager.Application.Subcategories.Commands
             };
 
             await _subcategoryRepository.CreateAsync(subcategory, cancellationToken);
+            _idStorage.SetId(subcategory.Id);
 
-            return subcategory.Id; 
+            return Unit.Value; 
         }
     }
 }

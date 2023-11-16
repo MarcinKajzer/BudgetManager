@@ -4,15 +4,14 @@ using Mediator;
 
 namespace BudgetManager.Application.Incomes.Commands
 {
-    public record DeleteIncomeCommand(Guid Id) : IRequest<Unit>;
+    public record DeleteIncomeCommand(Guid Id) : ICommand;
 
-    public class DeleteExpenseHandler : IRequestHandler<DeleteIncomeCommand, Unit>
+    public class DeleteExpenseHandler : ICommandHandler<DeleteIncomeCommand>
     {
         private readonly IIncomeRepository _repository;
-        public DeleteExpenseHandler(IIncomeRepository repository)
-        {
-            _repository = repository;
-        }
+
+        public DeleteExpenseHandler(IIncomeRepository repository) => _repository = repository;
+        
         public async ValueTask<Unit> Handle(DeleteIncomeCommand request, CancellationToken cancellationToken)
         {
             var income = await _repository.GetAsync(request.Id, cancellationToken) ?? throw new NotFoundException();

@@ -11,12 +11,14 @@ namespace BudgetManager.Application.Categories.Queries
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int Index { get; set; }
         public IEnumerable<ExpenseSubcategoryDto> Subcategories { get; set; }
 
         public class ExpenseSubcategoryDto
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
+            public int Index { get; set; }
             public Guid CategoryId { get; set; }
         }
 
