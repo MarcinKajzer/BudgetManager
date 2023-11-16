@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 namespace BudgetManager.Application
 {
@@ -14,6 +13,5 @@ namespace BudgetManager.Application
 
             return services;
         }
-
     }
 }

@@ -1,10 +1,9 @@
 using BudgetManager.API;
+using BudgetManager.API.ServicesExtensions;
 using BudgetManager.Application;
 using BudgetManager.Application.Common;
 using BudgetManager.Application.Interfaces;
 using BudgetManager.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,39 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((_, _, config) => config.ReadFrom.Configuration(builder.Configuration));
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-    c =>
-    {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Description = "Please enter a valid token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
-    });
+builder.Services.AddSwagger();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ICurrentUserService, CurrentUserService>();
