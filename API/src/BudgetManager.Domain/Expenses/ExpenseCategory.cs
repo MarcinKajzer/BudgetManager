@@ -5,6 +5,7 @@ namespace BudgetManager.Domain.Expenses
     public class ExpenseCategory : BaseAuditableEntity
     {
         public string Name { get; set; }
+        public int Index { get; set; } 
         public virtual ICollection<ExpenseSubcategory> Subcategories { get; set;}
     }
 }
