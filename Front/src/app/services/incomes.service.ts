@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, concatMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IncomeCategory } from '../types/income-category.type';
 import { IncomeTableCategory } from '../types/income-table-category.type';
 import { Income } from '../types/income.type';
 import { environment } from 'src/environments/environment';
@@ -13,7 +12,7 @@ export class IncomesService {
 
   apiUrl = environment.apiUrl;
 
-  private incomesTable: IncomeTableCategory[]
+  private incomesTable: IncomeTableCategory[];
   private incomesTable$: Subject<IncomeTableCategory[]>;
 
   constructor(private httpClient: HttpClient) {
@@ -40,14 +39,10 @@ export class IncomesService {
       amount: +amount,
       comment: ''
     }
-    this.httpClient.post(`${this.apiUrl}/income/`, payload, { observe: 'response', withCredentials: true})
-      .pipe(
-        concatMap((res: any) => {
-          var location = res.headers.get("Location");
-          return this.httpClient.get<Income>(location);
-        })
-      )
-      .subscribe((income: Income) => {
+
+    this.httpClient.post<string>(`${this.apiUrl}/income/`, payload, { withCredentials: true })
+      .subscribe((id: string) => {
+        const income = {...payload, id} as Income;
         const subcategory = this.incomesTable.find(c => c.id == categoryId);
         subcategory!.incomes.push(income);
         this.incomesTable$.next(this.incomesTable);
@@ -59,6 +54,7 @@ export class IncomesService {
       amount: +amount,
       comment
     }
+    
     this.httpClient.put(`${this.apiUrl}/income/${incomeId}`, payload, {withCredentials: true})
       .subscribe(() => {
         const incomes = this.incomesTable.flatMap(i => i.incomes);

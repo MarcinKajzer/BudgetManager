@@ -13,7 +13,10 @@ export class ExpenseCategoriesListComponent {
   newCategoryName?: string;
 
   constructor(private expenseCategoriesService: ExpenseCategoriesService) {
-    this.expenseCategoriesService.getCategories().subscribe(categories => this.expensesCategories = categories);
+    this.expenseCategoriesService.getCategories().subscribe(categories => {
+      console.log("refresh expense cat")
+      this.expensesCategories = categories
+    })
     this.expenseCategoriesService.refreshCategory();
   }
 

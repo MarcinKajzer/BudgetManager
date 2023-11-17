@@ -61,6 +61,7 @@ export class IncomesComponent {
   }
 
   prepareData(data: IncomeTableCategory[]) {
+    console.log("prepare data")
     this.dailySummary = Array(this.numberOfDays).fill(0);
     this.totalSummary = 0;
 

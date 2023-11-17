@@ -39,6 +39,7 @@ export class ExpensesService {
       amount: +amount,
       comment: ''
     }
+    
     this.httpClient.post(`${this.apiUrl}/expenses/`, payload, { observe: 'response', withCredentials: true })
       .pipe(
         concatMap((res: any) => {
@@ -59,6 +60,7 @@ export class ExpensesService {
       amount: +amount,
       comment
     }
+
     this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload, {withCredentials: true})
       .subscribe(() => {
         const expenses = this.expensesTable.flatMap(e => e.subcategories).flatMap(s => s.expenses);

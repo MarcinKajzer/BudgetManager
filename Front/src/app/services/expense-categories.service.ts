@@ -58,10 +58,9 @@ export class ExpenseCategoriesService {
 
     this.httpClient.put(`${this.apiUrl}/expenseCategory/${id}`, payload, {withCredentials: true})
       .subscribe(() => {
-        this.recreateCategoryObj(id, (category) => {
-          category.name = name;
-        })
-        this.categories$.next(this.categories); 
+        const category = this.categories.find(c => c.id == id);
+        category!.name = name;
+        this.categories$.next(this.categories);
       }
     );
   }
@@ -94,16 +93,16 @@ export class ExpenseCategoriesService {
     );
   }
 
-  editSubcategory(categoryId: string, subcategoryId: string, name: string) {
+  editSubcategory(subcategoryId: string, name: string) {
     const payload = {
       name
     }
 
     this.httpClient.put(`${this.apiUrl}/expenseSubcategory/${subcategoryId}`, payload, {withCredentials: true})
       .subscribe(() => {
-        this.recreateCategoryObj(categoryId, (category) => {
-          category.subcategories!.find(sc => sc.id == subcategoryId)!.name = name;
-        });
+        const subcategories = this.categories.flatMap(i => i.subcategories);
+        const subcategory = subcategories.find(s => s!.id == subcategoryId);
+        subcategory!.name = name; 
         this.categories$.next(this.categories); 
       }) 
   }
@@ -111,18 +110,11 @@ export class ExpenseCategoriesService {
   deleteSubcategory(categoryId: string, subcategoryId: string) {
     this.httpClient.delete(`${this.apiUrl}/expenseSubcategory/${subcategoryId}`, {withCredentials: true})
       .subscribe(() => {
-        this.recreateCategoryObj(categoryId, (category) => {
-          category.subcategories = category.subcategories!.filter(sc => sc.id != subcategoryId);
-        });
+        const category = this.categories.find(c => c.id == categoryId);
+        const subcategroyIndex = category!.subcategories!.findIndex(s => s.id == subcategoryId);
+        category!.subcategories!.splice(subcategroyIndex, 1);
         this.categories$.next(this.categories); 
       })
   }
 
-  private recreateCategoryObj(categoryId: string, updateCallback: (category: ExpenseCategory) => void) {
-    const categoryIndex = this.categories.findIndex(c => c.id == categoryId);
-    const categoryCopy = {...this.categories.find(c => c.id == categoryId)} as ExpenseCategory;
-    updateCallback(categoryCopy);
-    this.categories.splice(categoryIndex, 1, categoryCopy);
-  }
-  
 }

@@ -15,7 +15,10 @@ export class IncomeCategoriesListComponent {
   editedCategoryNewName? :string;
 
   constructor(private incomeCategoriesService: IncomeCategoriesService) {
-    this.incomeCategoriesService.getCategories().subscribe(categories => this.categories = categories);
+    this.incomeCategoriesService.getCategories().subscribe(categories => {
+      console.log("refresh income cat")
+      this.categories = categories
+    });
     this.incomeCategoriesService.refreshCategory();
   }
 

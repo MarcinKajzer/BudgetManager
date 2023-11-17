@@ -64,9 +64,9 @@ export class ExpensesCategoryComponent {
     }
   }
 
-  editSubcategoryName(categoryId:string, subcategoryId: string) {
+  editSubcategoryName(subcategoryId: string) {
     if (this.editedSubcategoryNewName != undefined) {
-      this.categoryService.editSubcategory(categoryId, subcategoryId, this.editedSubcategoryNewName);
+      this.categoryService.editSubcategory(subcategoryId, this.editedSubcategoryNewName);
     }
 
     this.editedSubcategoryNewName = undefined;
