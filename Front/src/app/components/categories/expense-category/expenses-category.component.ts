@@ -60,20 +60,20 @@ export class ExpensesCategoryComponent {
   setEditedSubcategoryId(subcategoryId?: string) {
     this.editedSubcategoryId = subcategoryId;
     if (subcategoryId != undefined) {
-      this.editedSubcategoryNewName = this.category!.subcategories.find(s => s.id == subcategoryId)!.name;
+      this.editedSubcategoryNewName = this.category!.subcategories!.find(s => s.id == subcategoryId)!.name;
     }
   }
 
-  editSubcategoryName(subcategoryId: string) {
+  editSubcategoryName(categoryId:string, subcategoryId: string) {
     if (this.editedSubcategoryNewName != undefined) {
-      this.categoryService.editSubcategory(subcategoryId, this.editedSubcategoryNewName);
+      this.categoryService.editSubcategory(categoryId, subcategoryId, this.editedSubcategoryNewName);
     }
 
     this.editedSubcategoryNewName = undefined;
     this.editedSubcategoryId = undefined;
   }
 
-  deleteSubcategory(id: string) {
-    this.categoryService.deleteSubcategory(id);
+  deleteSubcategory(categoryId:string, subcategoryId: string) {
+    this.categoryService.deleteSubcategory(categoryId, subcategoryId);
   }
 }
