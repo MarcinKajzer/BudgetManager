@@ -16,37 +16,10 @@ import { IncomesComponent } from './components/incomes/incomes.component';
 import { DateSelectorComponent } from './components/shared/date-selector/date-selector.component';
 import { ExpenseCategoriesListComponent } from './components/categories/expense-categories-list/expenses-categories-list.component';
 import { IncomeCategoriesListComponent } from './components/categories/income-categories-list/income-categories-list.component';
-import { LoginComponent as SignInComponent } from './components/auth/login/login.component';
-import { RegisterComponent as SignUpComponent } from './components/auth/register/register.component';
+import { SignInComponent } from './components/auth/sign-in/sign-in.component';
+import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
-
-const routes = [
-  {
-    path: 'signin',
-    component: SignInComponent
-  },
-  {
-    path: 'signup',
-    component: SignUpComponent
-  },
-  {
-    path: 'expenses',
-    component: ExpensesComponent
-  },
-  {
-    path: 'incomes',
-    component: IncomesComponent
-  },
-  {
-    path: 'dashboard',
-    component: DashboardComponent
-  },
-  {
-    path: 'categories', 
-    component: CategoriesListComponent
-  }
-]
 
 @NgModule({
   declarations: [
@@ -66,7 +39,6 @@ const routes = [
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(routes),
     FormsModule,
     NgbModule,
     ReactiveFormsModule,

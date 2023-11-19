@@ -13,10 +13,13 @@
             <a class="nav-link" [routerLink]="['/incomes']" routerLinkActive="active">Incomes</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/categories']" routerLinkActive="active">Categories</a>
+            <a class="nav-link" [routerLink]="['/categories/expenses']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Categories</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" [routerLink]="['/notifications']" routerLinkActive="active">Notifications</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" (click)="signOut()">Sign Out</a>
         </li>
     </ul>
 </aside>

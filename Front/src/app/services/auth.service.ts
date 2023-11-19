@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { SignIn } from '../types/sign-in.type';
 import { SignUp } from '../types/sign-up.type';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { BehaviorSubject, Observable, filter } from 'rxjs';
+import { BehaviorSubject, Observable, filter, map, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { Tokens } from '../types/tokens.type';
 
@@ -27,14 +27,17 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}/auth`;
 
   signIn(signInModel: SignIn) {
-    this.httpClient.post<Tokens>(`${this.apiUrl}/signin`, signInModel)
-    .subscribe((tokens: Tokens) => 
+    return this.httpClient.post<Tokens>(`${this.apiUrl}/signin`, signInModel)
+    .pipe(
+      tap((tokens: Tokens) => 
       {
         localStorage.setItem(this.ACCESS_TOKEN_KEY, tokens.accessToken);
         localStorage.setItem(this.REFRESH_TOKEN_KEY, tokens.refreshToken);
         this.accessToken$.next(tokens.accessToken)
-      });
+      })
+    )
   }
+
 
   signUp(signUpModel: SignUp) {
     this.httpClient.post(`${this.apiUrl}/signup`, signUpModel)
@@ -48,6 +51,7 @@ export class AuthService {
     localStorage.removeItem(this.ACCESS_TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
 
+    this.accessToken$.next(null);
     // this.httpClient.post(`${this.apiUrl}/signout`, null).subscribe((result: any) => {
     //   console.log(result)
     // })
@@ -94,5 +98,13 @@ export class AuthService {
     }
 
     return this.accessToken$.asObservable().pipe(filter(token => !!token));
+  }
+
+  isUserAuthenticated(): Observable<boolean> {
+    return this.accessToken$.pipe(
+      map(token => {
+        return token != null;
+      })
+    )
   }
 }
