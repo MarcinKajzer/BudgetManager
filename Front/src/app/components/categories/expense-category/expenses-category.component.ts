@@ -15,28 +15,40 @@ export class ExpensesCategoryComponent {
     this.category = value;
   }
 
-  showCategoryNameInput: boolean = false;
+  showEditCategoryNameForm: boolean = false;
   categoryNewName?: string;
+
+  showAddNewSubcategoryForm: boolean = false;
   newSubcategoryName?: string;
+  
   editedSubcategoryId?: string;
   editedSubcategoryNewName?: string;
-  displayAddNewSubcategoryForm: boolean = false;
-
+  
   constructor(private categoryService: ExpenseCategoriesService) { }
 
-  showEditNameInput() {
-    this.categoryNewName = this.category?.name;
-    this.showCategoryNameInput = true;
+  showEditCategoryNameInput() {
+    this.categoryNewName = this.category!.name;
+    this.showEditCategoryNameForm = true;
   }
 
-  hideEditNameInput() {
-    this.showCategoryNameInput = false;
+  hideEditCategoryNameInput() {
+    this.showEditCategoryNameForm = false;
     this.categoryNewName = undefined;
   }
 
+  isNameValid(name: string | undefined): boolean {
+    return name != null && name.trim() !== '';
+  }
+
   editCategory() {
-    if (this.categoryNewName != undefined) {
-      this.categoryService.editCategory(this.category!.id, this.categoryNewName);
+    if (this.isNameValid(this.categoryNewName)) {
+      this.categoryService.editCategory(this.category!.id, this.categoryNewName!)
+        .subscribe(() => {
+          this.hideEditCategoryNameInput();
+        })
+    }
+    else {
+      this.hideEditCategoryNameInput();
     }
   }
 
@@ -44,17 +56,19 @@ export class ExpensesCategoryComponent {
     this.categoryService.deleteCategory(this.category!.id);
   }
 
-  displayAddSubcategoryForm() {
-    this.displayAddNewSubcategoryForm = true;
+  showAddSubcategoryForm() {
+    this.showAddNewSubcategoryForm = true;
   }
 
-  closeAddSubcategoryForm() {
-    this.displayAddNewSubcategoryForm = false;
+  hideAddSubcategoryForm() {
+    this.showAddNewSubcategoryForm = false;
   }
 
   addSubcategory() {
     this.categoryService.addSubcategory(this.newSubcategoryName!, this.category!.id)
-    this.newSubcategoryName = undefined;
+      .subscribe(() => {
+        this.newSubcategoryName = undefined;
+      })
   }
 
   setEditedSubcategoryId(subcategoryId?: string) {
@@ -65,12 +79,17 @@ export class ExpensesCategoryComponent {
   }
 
   editSubcategoryName(subcategoryId: string) {
-    if (this.editedSubcategoryNewName != undefined) {
-      this.categoryService.editSubcategory(subcategoryId, this.editedSubcategoryNewName);
+    if (this.isNameValid(this.editedSubcategoryNewName)) {
+      this.categoryService.editSubcategory(subcategoryId, this.editedSubcategoryNewName!)
+      .subscribe(() => {
+        this.editedSubcategoryNewName = undefined;
+        this.editedSubcategoryId = undefined;
+      });
     }
-
-    this.editedSubcategoryNewName = undefined;
-    this.editedSubcategoryId = undefined;
+    else {
+      this.editedSubcategoryNewName = undefined;
+      this.editedSubcategoryId = undefined;
+    }
   }
 
   deleteSubcategory(categoryId:string, subcategoryId: string) {

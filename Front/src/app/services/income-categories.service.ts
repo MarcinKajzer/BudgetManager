@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IncomeCategory } from '../types/income-category.type';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
@@ -32,36 +32,38 @@ export class IncomeCategoriesService {
     );   
   }
 
-  addCategory(categoryName: string) {
+  addCategory(categoryName: string): Observable<string> {
     const payload = {
       name: categoryName
     }
 
-    this.httpClient.post<string>(`${this.apiUrl}/IncomeCategory`, payload, {withCredentials: true})
-      .subscribe((categoryId: string) => {
-        const category: IncomeCategory = {
-          id: categoryId,
-          name: categoryName
-        }
+    return this.httpClient.post<string>(`${this.apiUrl}/IncomeCategory`, payload, {withCredentials: true})
+      .pipe(
+        tap((categoryId: string) => {
+          const category: IncomeCategory = {
+            id: categoryId,
+            name: categoryName
+          }
 
-        this.categories.push(category);
-        this.categories$.next(this.categories);
-      }
-    );
+          this.categories.push(category);
+          this.categories$.next(this.categories);
+        })
+      );
   }
 
-  editCategory(id: string, name: string) {
+  editCategory(id: string, name: string): Observable<any> {
     const payload = {
       name
     }
 
-    this.httpClient.put(`${this.apiUrl}/IncomeCategory/${id}`, payload, {withCredentials: true})
-      .subscribe(() => {
-        const category = this.categories.find(c => c.id == id);
-        category!.name = name;
-        this.categories$.next(this.categories);
-      }
-    )
+    return this.httpClient.put(`${this.apiUrl}/IncomeCategory/${id}`, payload, {withCredentials: true})
+      .pipe(
+        tap(() => {
+          const category = this.categories.find(c => c.id == id);
+          category!.name = name;
+          this.categories$.next(this.categories);
+        })
+      );
   }
 
   deleteCategory(id: string) {

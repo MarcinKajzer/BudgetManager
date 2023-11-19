@@ -15,20 +15,23 @@ export class IncomeCategoriesListComponent {
   editedCategoryNewName? :string;
 
   constructor(private incomeCategoriesService: IncomeCategoriesService) {
-    this.incomeCategoriesService.getCategories().subscribe(categories => {
-      console.log("refresh income cat")
-      this.categories = categories
-    });
+    this.incomeCategoriesService.getCategories()
+      .subscribe(categories => {
+        this.categories = categories
+      });
+
     this.incomeCategoriesService.refreshCategory();
   }
 
-  isNewCategoryNameValid(): boolean {
-    return this.newCategoryName != null && this.newCategoryName.trim() !== '';
+  isNameValid(name: string | undefined): boolean {
+    return name != null && name.trim() !== '';
   }
 
   addCategory() {
-    this.incomeCategoriesService.addCategory(this.newCategoryName!);
-    this.newCategoryName = undefined;
+    this.incomeCategoriesService.addCategory(this.newCategoryName!)
+      .subscribe(() => {
+        this.newCategoryName = undefined;
+      })
   }
 
   setEditedCategoryId(categoryId?: string) {
@@ -39,12 +42,13 @@ export class IncomeCategoriesListComponent {
   }
 
   editCategoryName(categoryId: string) {
-    if (this.editedCategoryNewName != undefined) {
-      this.incomeCategoriesService.editCategory(categoryId, this.editedCategoryNewName!);
-    }
-
-    this.editedCategoryNewName = undefined;
-    this.editedCategoryId = undefined;
+    if (this.isNameValid(this.editedCategoryNewName)) {
+      this.incomeCategoriesService.editCategory(categoryId, this.editedCategoryNewName!)
+        .subscribe(() => {
+          this.editedCategoryNewName = undefined;
+          this.editedCategoryId = undefined;
+        })
+      };
   }
 
   deleteCategory(id: string) {

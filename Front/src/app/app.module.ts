@@ -16,7 +16,6 @@ import { IncomesComponent } from './components/incomes/incomes.component';
 import { DateSelectorComponent } from './components/shared/date-selector/date-selector.component';
 import { ExpenseCategoriesListComponent } from './components/categories/expense-categories-list/expenses-categories-list.component';
 import { IncomeCategoriesListComponent } from './components/categories/income-categories-list/income-categories-list.component';
-import { IncomeCategoryComponent } from './components/categories/income-category/income-category.component';
 import { LoginComponent as SignInComponent } from './components/auth/login/login.component';
 import { RegisterComponent as SignUpComponent } from './components/auth/register/register.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
@@ -61,7 +60,6 @@ const routes = [
     DateSelectorComponent,
     ExpenseCategoriesListComponent,
     IncomeCategoriesListComponent,
-    IncomeCategoryComponent,
     SignInComponent,
     SignUpComponent
   ],

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, Subject, concatMap } from "rxjs";
+import { Observable, Subject, concatMap, of, tap } from "rxjs";
 import { ExpenseCategory } from "../types/expense-category.type";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "src/environments/environment";
@@ -33,36 +33,38 @@ export class ExpenseCategoriesService {
     );
   }
 
-  addCategory(categoryName: string) {
+  addCategory(categoryName: string): Observable<string> {
     const payload = {
       name: categoryName
     }
 
-    this.httpClient.post<string>(`${this.apiUrl}/expenseCategory`, payload)
-      .subscribe((categoryId: string) => {
-        const category: ExpenseCategory = {
-          id: categoryId,
-          name: categoryName
-        }
+    return this.httpClient.post<string>(`${this.apiUrl}/expenseCategory`, payload, {withCredentials: true})
+      .pipe(
+        tap((categoryId: string) => {
+          const category: ExpenseCategory = {
+            id: categoryId,
+            name: categoryName
+          }
 
-        this.categories.push(category);
-        this.categories$.next(this.categories);
-      }
+          this.categories.push(category);
+          this.categories$.next(this.categories);
+        })
     );
   }
 
-  editCategory(id: string, name: string) {
+  editCategory(id: string, name: string): Observable<any> {
     const payload = {
       name
     }
 
-    this.httpClient.put(`${this.apiUrl}/expenseCategory/${id}`, payload, {withCredentials: true})
-      .subscribe(() => {
-        const category = this.categories.find(c => c.id == id);
-        category!.name = name;
-        this.categories$.next(this.categories);
-      }
-    );
+    return this.httpClient.put(`${this.apiUrl}/expenseCategory/${id}`, payload, {withCredentials: true})
+      .pipe(
+        tap(() => {
+          const category = this.categories.find(c => c.id == id);
+          category!.name = name;
+          this.categories$.next(this.categories);
+        })
+      );
   }
 
   deleteCategory(id: string) {
@@ -74,23 +76,24 @@ export class ExpenseCategoriesService {
     )
   }
 
-  addSubcategory(name: string, categoryId: string) {
+  addSubcategory(name: string, categoryId: string): Observable<string> {
     const payload = {
       name,
       categoryId
     }
 
-    this.httpClient.post<string>(`${this.apiUrl}/expenseSubcategory`, payload, {withCredentials: true})
-      .subscribe((subcategoryId: string) => {
-        const subcategory: ExpenseSubcategory = {
-          id: subcategoryId,
-          name: name
-        };
-
-        this.categories.find(c => c.id == categoryId)!.subcategories!.push(subcategory);
-        this.categories$.next(this.categories);
-      }
-    );
+    return this.httpClient.post<string>(`${this.apiUrl}/expenseSubcategory`, payload, {withCredentials: true})
+      .pipe(
+        tap((subcategoryId: string) => {
+          const subcategory: ExpenseSubcategory = {
+            id: subcategoryId,
+            name: name
+          };
+  
+          this.categories.find(c => c.id == categoryId)!.subcategories!.push(subcategory);
+          this.categories$.next(this.categories);
+        })
+      );
   }
 
   editSubcategory(subcategoryId: string, name: string) {
@@ -98,13 +101,15 @@ export class ExpenseCategoriesService {
       name
     }
 
-    this.httpClient.put(`${this.apiUrl}/expenseSubcategory/${subcategoryId}`, payload, {withCredentials: true})
-      .subscribe(() => {
-        const subcategories = this.categories.flatMap(i => i.subcategories);
-        const subcategory = subcategories.find(s => s!.id == subcategoryId);
-        subcategory!.name = name; 
-        this.categories$.next(this.categories); 
-      }) 
+    return this.httpClient.put(`${this.apiUrl}/expenseSubcategory/${subcategoryId}`, payload, {withCredentials: true})
+      .pipe(
+        tap(() => {
+          const subcategories = this.categories.flatMap(i => i.subcategories);
+          const subcategory = subcategories.find(s => s!.id == subcategoryId);
+          subcategory!.name = name; 
+          this.categories$.next(this.categories); 
+        }) 
+      )
   }
 
   deleteSubcategory(categoryId: string, subcategoryId: string) {

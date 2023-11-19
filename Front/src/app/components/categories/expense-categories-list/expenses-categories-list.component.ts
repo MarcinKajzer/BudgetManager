@@ -14,9 +14,8 @@ export class ExpenseCategoriesListComponent {
 
   constructor(private expenseCategoriesService: ExpenseCategoriesService) {
     this.expenseCategoriesService.getCategories().subscribe(categories => {
-      console.log("refresh expense cat")
       this.expensesCategories = categories
-    })
+    });
     this.expenseCategoriesService.refreshCategory();
   }
 
@@ -25,7 +24,9 @@ export class ExpenseCategoriesListComponent {
   }
 
   addCategory() {
-    this.expenseCategoriesService.addCategory(this.newCategoryName!);
-    this.newCategoryName = undefined;
+    this.expenseCategoriesService.addCategory(this.newCategoryName!)
+      .subscribe(() => {
+        this.newCategoryName = undefined;
+      });
   }
 }
