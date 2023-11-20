@@ -4,19 +4,19 @@
             Budget Manager
         </a>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/dashboard']" routerLinkActive="active">Dashboard</a>
+            <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/expenses']" routerLinkActive="active">Expenses</a>
+            <a class="nav-link" routerLink="/expenses" routerLinkActive="active">Expenses</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/incomes']" routerLinkActive="active">Incomes</a>
+            <a class="nav-link" routerLink="/incomes" routerLinkActive="active">Incomes</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/categories/expenses']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Categories</a>
+            <a class="nav-link" routerLink="/categories" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">Categories</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/notifications']" routerLinkActive="active">Notifications</a>
+            <a class="nav-link" routerLink="/notifications" routerLinkActive="active">Notifications</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" (click)="signOut()">Sign Out</a>
