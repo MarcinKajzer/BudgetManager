@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { CategoriesListComponent } from './components/categories/categories-list.component';
-import { RouterModule } from '@angular/router';
 import { ExpensesComponent } from './components/expenses/expenses.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +19,8 @@ import { SignInComponent } from './components/auth/sign-in/sign-in.component';
 import { SignUpComponent } from './components/auth/sign-up/sign-up.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { PositionsFormPopoverComponent } from './components/shared/positions-form-popover/positions-form-popover.component';
+import { PositionsListPopoverComponent } from './components/shared/positions-list-popover/positions-list-popover.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,9 @@ import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     ExpenseCategoriesListComponent,
     IncomeCategoriesListComponent,
     SignInComponent,
-    SignUpComponent
+    SignUpComponent,
+    PositionsFormPopoverComponent,
+    PositionsListPopoverComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { UtilitiesService } from '../../services/utilities.service';
+import { PositionsPopoverService } from '../../services/positions-popover.service';
 import { IncomesService } from '../../services/incomes.service';
 import { Income } from '../../types/income.type';
 import { IncomeTableCategory } from 'src/app/types/income-table-category.type';
@@ -44,7 +44,7 @@ export class IncomesComponent {
   editIncomesPopupXOffset: number = 0;
   editIncomesPopupYOffset: number = 0;
 
-  constructor(private utilitiesService: UtilitiesService, private incomesService: IncomesService) {
+  constructor(private utilitiesService: PositionsPopoverService, private incomesService: IncomesService) {
     //safesub
     this.utilitiesService.getIsIncomesPopoverVisible().subscribe(isVisible => this.isEditIncomesPopupVisible = isVisible);
 

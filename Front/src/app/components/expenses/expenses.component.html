@@ -1,33 +1,13 @@
-<div [ngClass]="!isExpensesListPopupVisible ? 'hidden' : ''" id="expenses-list-popup" [style]="'left:' + expensesListPopupXOffset + 'px; top:' + expensesListPopupYOffset + 'px'" (click)="showPopup()">
-    <div>
-        <div *ngFor="let exp of selectedDayExpenses; let i = index">
-            <p>{{exp.amount}} PLN - {{exp.comment}} </p>
-        </div>
-    </div>
-</div>
+<app-positions-list-popover
+    [positions]="selectedDailyPositions.positions">
+</app-positions-list-popover>
 
-<div [ngClass]="!isEditExpensesPopupVisible ? 'hidden' : ''" id="edit-expenses-popup"  [style]="'left:' + editExpensesPopupXOffset + 'px; top:' + editExpensesPopupYOffset + 'px'" >
-    <div>
-        <div *ngFor="let exp of selectedDayExpenses; let i = index" class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateExpenseAmount($event, exp)">
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateExpenseComment($event, exp)" autofocus></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addExpense($event)" [(ngModel)]="newExpenseAmount" #amountInput>
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newExpenseComment" [disabled]="newExpenseAmount == null"></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-        <div class="input-group mb-3" *ngIf="newExpenseAmount?.length > 0">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (focus)="focusAmountInput()">
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" disabled></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-    </div>
-</div>
+<app-positions-form-popover
+    [positions]="selectedDailyPositions.positions" 
+    (expenseAdded)="addExpense($event)"
+    (expenseUpdated)="updateExpense($event)" 
+    (expenseDeleted)="deleteExpense($event)">
+</app-positions-form-popover>
 
 <app-date-selector [year]="selectedYear" [month]="selectedMonth" (selectDate)="changeDate($event)"></app-date-selector>
 
@@ -41,7 +21,7 @@
             </tr>
         </thead>
         <tbody>
-            <ng-container *ngFor="let category of data">
+            <ng-container *ngFor="let category of expensesTable">
                 <tr class='table-secondary fw-bold'>
                     <td class="pt-0 pb-0">{{category.name}}</td>
                     <td class="p-0" *ngFor="let dailyExpense of category.dailyExpenses">
@@ -53,7 +33,7 @@
                 </tr>
                 <tr *ngFor="let subcategory of category.subcategories">
                     <td class="pt-0 pb-0">{{subcategory.name}}</td>
-                    <td *ngFor="let dailyExpense of subcategory.dailyExpenses; let i = index" class="p-0 category-day" (click)="showEditExpensesPopup($event, category.id, subcategory.id, i+1)" (mouseover)="showExpensesListPopup($event, category.id, subcategory.id, i+1)">
+                    <td *ngFor="let dailyExpense of subcategory.dailyExpenses; let i = index" class="p-0 category-day" (click)="showExpensesFormPopover($event)" (mouseover)="showExpensesListPopup($event, category.id, subcategory.id, i+1)">
                         <ng-container *ngIf="dailyExpense > 0">
                             {{dailyExpense}}
                         </ng-container>
@@ -68,7 +48,7 @@
                         {{sum}}
                     </ng-container>
                 </th>
-                <th class="p-0 table-danger">{{totalSummary}}</th>
+                <th class="p-0 table-danger">{{monthlySummary}}</th>
             </tr>
         </tbody>
     </table>

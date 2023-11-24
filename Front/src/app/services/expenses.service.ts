@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, concatMap } from 'rxjs';
+import { Observable, Subject, concatMap, tap } from 'rxjs';
 import { ExpenseTableCategory } from '../types/expense-table-category.type';
 import { Expense } from '../types/expense.type';
 import { environment } from 'src/environments/environment';
@@ -24,49 +24,47 @@ export class ExpensesService {
     return this.expensesTable$ as Observable<ExpenseTableCategory[]>;
   }
 
-  refreshExpenses(year: number, month: number): void {
-    this.httpClient.get<ExpenseTableCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`, {withCredentials: true})
-      .subscribe(expenses => {
-        this.expensesTable = expenses;
-        this.expensesTable$.next(expenses)
-      });
+  refreshExpenses(year: number, month: number): Observable<any> {
+    return this.httpClient.get<ExpenseTableCategory[]>(`${this.apiUrl}/expenseTable?Year=${year}&Month=${month}`, {withCredentials: true})
+      .pipe(
+        tap(expenses => {
+          this.expensesTable = expenses;
+          this.expensesTable$.next(expenses);
+        })
+      );
   }
 
-  addExpense(subcategoryId: string, amount: number, date: Date) {
+  addExpense(subcategoryId: string, amount: number, date: Date): Observable<string> {
     const payload = {
       subcategoryId,
       date,
-      amount: +amount,
+      amount,
       comment: ''
     }
     
-    this.httpClient.post(`${this.apiUrl}/expenses/`, payload, { observe: 'response', withCredentials: true })
+    return this.httpClient.post<string>(`${this.apiUrl}/expenses/`, payload, { withCredentials: true })
       .pipe(
-        concatMap((res: any) => {
-          var location = res.headers.get("Location");
-          return this.httpClient.get<Expense>(location);
+        tap((id: string) => {
+          const expense: Expense = {...payload, id};
+          
+          const subcategory = this.expensesTable.flatMap(e => e.subcategories).find(s => s.id == subcategoryId);
+          subcategory!.expenses.push(expense);
+          this.expensesTable$.next(this.expensesTable);
         })
-      )
-      .subscribe((expense: Expense) => {
-        const subcategory = this.expensesTable.flatMap(e => e.subcategories).find(s => s.id == subcategoryId);
-        subcategory!.expenses.push(expense);
-        this.expensesTable$.next(this.expensesTable);
-      }
-    )
+      )  
   }
 
-  updateExpense(expenseId: string, amount: number, comment: string) {
-    const payload = {
-      amount: +amount,
-      comment
-    }
+  deleteExpense(id: number) {
+    
+  }
 
-    this.httpClient.put(`${this.apiUrl}/expenses/${expenseId}`, payload, {withCredentials: true})
+  updateExpense(exp: Expense) {
+    this.httpClient.put(`${this.apiUrl}/expenses/${exp.id}`, exp, {withCredentials: true})
       .subscribe(() => {
         const expenses = this.expensesTable.flatMap(e => e.subcategories).flatMap(s => s.expenses);
-        const expense = expenses.find(e => e.id == expenseId);
-        expense!.amount = +amount;
-        expense!.comment = comment;
+        const expense = expenses.find(e => e.id == exp.id);
+        expense!.amount = exp.amount;
+        expense!.comment = exp.comment;
         this.expensesTable$.next(this.expensesTable)
       })
   }

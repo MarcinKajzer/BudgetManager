@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { UtilitiesService } from './services/utilities.service';
+import { PositionsPopoverService } from './services/positions-popover.service';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class AppComponent {
     if (event.target.closest('#expenses-list-popup') == null && 
       !event.target.classList.contains("category-day") && 
       event.target.closest("#edit-expenses-popup") == null) {
-      this.utilitiesService.setIsExpensesPopoverVisible(false);
+      this.utilitiesService.setFormPopoversettings({isVisible: false})
     }
 
     if (event.target.closest('#incomes-list-popup') == null && 
@@ -26,7 +26,7 @@ export class AppComponent {
     }
   }
 
-  constructor(private utilitiesService: UtilitiesService, private authService: AuthService) {
+  constructor(private utilitiesService: PositionsPopoverService, private authService: AuthService) {
     this.authService.isUserAuthenticated()
       .subscribe((isAuthenticated: boolean) => this.isUserAuthenticated = isAuthenticated);
   }

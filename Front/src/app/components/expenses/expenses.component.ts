@@ -3,7 +3,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ExpenseTableCategory } from 'src/app/types/expense-table-category.type';
 import { Expense } from '../../types/expense.type';
 import { ExpensesService } from '../../services/expenses.service';
-import { UtilitiesService } from '../../services/utilities.service';
+import { PositionsPopoverService } from '../../services/positions-popover.service';
+import { DailyPositions } from 'src/app/types/selected-positions.type';
 
 @Component({
   selector: 'app-expenses',
@@ -14,76 +15,65 @@ export class ExpensesComponent {
 
   @ViewChild('amountInput', {static: false}) amountInputRef?: ElementRef;
 
-  amountInputFocused: boolean = false;
+  expensesTable?: ExpenseTableCategory[];
+  dailySummary?: number[];
+  monthlySummary?: number;
 
   date = new Date()
   selectedYear: number = this.date.getFullYear();
-  selectedMonth: number = this.date.getMonth() + 1 ;
-
-  numberOfDays = 30;
+  selectedMonth: number = this.date.getMonth() + 1;
+  numberOfDays = this.daysInMonth(this.selectedYear, this.selectedMonth);
   days = Array.from({length: this.numberOfDays}, (_, index) => index + 1);
-  expensesForm: FormGroup;
-  
-  selectedDayExpenses?: Expense[];
+
+  selectedDailyPositions: DailyPositions = {};
+
 
   selectedCategoryId: any;
   selectedSubcategoryId?: any;
   selectedDay: any;
-  newExpenseAmount: any;
-  newExpenseComment: any
+ 
+
+
   savingExpensesId?: string;
+  amountInputFocused: boolean = false;
 
-  data?: ExpenseTableCategory[];
-  dailySummary?: number[];
-  totalSummary?: number;
+  constructor(private utilitiesService: PositionsPopoverService, private expensesService: ExpensesService) {
+    
+    this.expensesService.getExpenses()
+      .subscribe(data => { 
+        this.prepareData(data);
+        this.expensesTable = data
+      });
 
-  isExpensesListPopupVisible: boolean = false;
-  expensesListPopupXOffset: number = 0;
-  expensesListPopupYOffset: number = 0;
-
-  isEditExpensesPopupVisible: boolean = false;
-  editExpensesPopupXOffset: number = 0;
-  editExpensesPopupYOffset: number = 0;
-
-  constructor(private utilitiesService: UtilitiesService, private expensesService: ExpensesService) {
-    //safesub
-    this.utilitiesService.getIsExpensesPopoverVisible().subscribe(isVisible => this.isEditExpensesPopupVisible = isVisible);
-
-    this.expensesService.getExpenses().subscribe(data => { 
-      this.prepareData(data);
-      this.data = data
-    });
-    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth);
-
-    this.expensesForm = new FormGroup({
-      amount: new FormControl(''),
-      comment: new FormControl('')
-    });
+    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth)
+      .subscribe();
   }
 
   prepareData(data: ExpenseTableCategory[]) {
     this.dailySummary = Array(this.numberOfDays).fill(0);
-    this.totalSummary = 0;
+    this.monthlySummary = 0;
     
     for (const category of data){
       category.dailyExpenses = Array(this.numberOfDays).fill(0);
       for (const subcategory of category.subcategories){
         subcategory.dailyExpenses = Array(this.numberOfDays).fill(0);
         for (const expense of subcategory.expenses) {
-          const index = new Date(expense.date).getDate()-1
+          const index = new Date(expense.date).getDate()-1;
           subcategory.dailyExpenses[index] += expense.amount;
           category.dailyExpenses[index] += expense.amount;
           this.dailySummary[index] += expense.amount; 
-          this.totalSummary += expense.amount;
+          this.monthlySummary += expense.amount;
         }
       }
     }
 
     if (this.selectedCategoryId && this.selectedSubcategoryId && this.selectedDay) {
-      this.selectedDayExpenses = this.getExpensesForDay(this.selectedCategoryId, this.selectedSubcategoryId, this.selectedDay);
-      this.newExpenseAmount = null;
-      this.newExpenseComment = null;
+      this.selectedDailyPositions.positions = this.getExpensesForDay(this.selectedCategoryId, this.selectedSubcategoryId, this.selectedDay);
     }
+  }
+
+  daysInMonth(year: number, month: number) {
+    return new Date(year, month, 0).getDate();
   }
 
   ngAfterViewChecked() { // poprawić 
@@ -96,15 +86,16 @@ export class ExpensesComponent {
   changeDate(date: any) {
     this.selectedYear = date.year;
     this.selectedMonth = date.month;
-    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth);
-  }
+    this.numberOfDays = this.daysInMonth(this.selectedYear, this.selectedMonth);
 
-  sum(arr: number[]) {
-    return arr.reduce((a, b) => a + b);
+    this.expensesService.refreshExpenses(this.selectedYear, this.selectedMonth)
+      .subscribe(() => {
+        this.days = Array.from({length: this.numberOfDays}, (_, index) => index + 1);
+      });
   }
 
   getCategory(categoryId: string) {
-    return this.data!.find(x => x.id == categoryId);
+    return this.expensesTable!.find(x => x.id == categoryId);
   }
 
   getSubcategory(categoryId: string, subcategoryId: string) {
@@ -119,72 +110,47 @@ export class ExpensesComponent {
     let expenses = this.getExpensesForDay(categoryId, subcategoryId, day);
 
     if (expenses!.length == 0) {
-      this.isExpensesListPopupVisible = false;
+      this.utilitiesService.setListPopoversettings({isVisible: false});
       return;
     }
 
-    this.newExpenseAmount = null;
-    this.newExpenseComment = null;
-
     this.selectedCategoryId = categoryId;
     this.selectedSubcategoryId = subcategoryId;
     this.selectedDay = day;
-    this.selectedDayExpenses = expenses;
+    this.selectedDailyPositions.positions = expenses;
    
-    this.isExpensesListPopupVisible = true;
-    this.expensesListPopupXOffset = event.clientX;
-    this.expensesListPopupYOffset = event.clientY;
-
-    this.isEditExpensesPopupVisible = false;
-  }
-
-  showPopup() {
-    this.isEditExpensesPopupVisible = true;
-    this.editExpensesPopupXOffset = this.expensesListPopupXOffset;
-    this.editExpensesPopupYOffset = this.expensesListPopupYOffset;
-
-    this.isExpensesListPopupVisible = false;
-  }
-
-  showEditExpensesPopup(event: any, categoryId: string, subcategoryId: string, day: number) {
-    this.newExpenseAmount = null;
-    this.newExpenseComment = null;
-
-    this.selectedCategoryId = categoryId;
-    this.selectedSubcategoryId = subcategoryId;
-    this.selectedDay = day;
-    this.selectedDayExpenses = this.getExpensesForDay(categoryId, subcategoryId, day);
-   
-    this.isEditExpensesPopupVisible = true;
-    this.editExpensesPopupXOffset = event.clientX;
-    this.editExpensesPopupYOffset = event.clientY;
+    this.utilitiesService.setFormPopoversettings({isVisible: false, xOffset: event.clientX, yOffset: event.clientY});
+    this.utilitiesService.setListPopoversettings({isVisible: true, xOffset: event.clientX, yOffset: event.clientY});
     
-    this.isExpensesListPopupVisible = false;
   }
 
-  addExpense(event: any) {
-    if (event.target.value == "") {
-      return
-    }
-
-    const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDay);
-    this.expensesService.addExpense(this.selectedSubcategoryId!, event.target.value, date);
-  }
-
-  updateExpenseAmount(event: any, expense: Expense) {
-    if (event.target.value != expense.amount && event.target.value != "") { //obsłużyć wprowadzenie przez użytkownika pustego stringa w tabeli
-      this.expensesService.updateExpense(expense.id, event.target.value, expense.comment);
-    }
-  }
-
-  updateExpenseComment(event: any, expense: Expense) {
-    if (event.target.value != expense.comment) {
-      this.expensesService.updateExpense(expense.id, expense.amount, event.target.value);
-    }
+  showExpensesFormPopover(event: any) {
+    this.utilitiesService.setFormPopoversettings({isVisible: true, xOffset: event.clientX, yOffset: event.clientY});
+    this.utilitiesService.setListPopoversettings({isVisible: false, xOffset: event.clientX, yOffset: event.clientY});
   }
 
   focusAmountInput() {
-    console.log("amount-focus")
     this.amountInputFocused = true;
+  }
+
+
+
+
+  addExpense(amount: number) {
+    const date = new Date(this.selectedYear, this.selectedMonth - 1, this.selectedDay);
+    this.expensesService.addExpense(this.selectedSubcategoryId!, amount, date).subscribe();
+  }
+
+  deleteExpense(id: number) {
+    this.expensesService.deleteExpense(id);
+  }
+
+  updateExpense(expense: Expense) {
+    this.expensesService.updateExpense(expense);
+  }
+
+
+  sum(arr: number[]) {
+    return arr.reduce((a, b) => a + b);
   }
 }

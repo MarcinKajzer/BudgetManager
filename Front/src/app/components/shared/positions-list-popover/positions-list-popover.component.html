@@ -1,0 +1,7 @@
+<div [ngClass]="!settings!.isVisible ? 'hidden' : ''" id="expenses-list-popup" [style]="'left:' + settings!.xOffset + 'px; top:' + settings!.yOffset + 'px'" (click)="showPositionsFormPopover()">
+  <div>
+      <div *ngFor="let pos of positions; let i = index">
+          <p>{{pos.amount}} PLN - {{pos.comment}} </p>
+      </div>
+  </div>
+</div>
