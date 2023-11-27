@@ -1,33 +1,13 @@
-<div [ngClass]="!isIncomesListPopupVisible ? 'hidden' : ''" id="incomes-list-popup" [style]="'left:' + incomesListPopupXOffset + 'px; top:' + incomesListPopupYOffset + 'px'" (click)="showPopup()">
-    <div>
-        <div *ngFor="let exp of selectedDayExpenses; let i = index">
-            <p>{{exp.amount}} PLN - {{exp.comment}} </p>
-        </div>
-    </div>
-</div>
+<app-positions-list-popover
+    [positions]="dailyIncomes.positions">
+</app-positions-list-popover>
 
-<div [ngClass]="!isEditIncomesPopupVisible ? 'hidden' : ''" id="edit-incomes-popup"  [style]="'left:' + editIncomesPopupXOffset + 'px; top:' + editIncomesPopupYOffset + 'px'" >
-    <div>
-        <div *ngFor="let exp of selectedDayExpenses; let i = index" class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="exp.amount" (blur)="updateIncomeAmount($event, exp)">
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="exp.comment" (blur)="updateIncomeComment($event, exp)"></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addIncome($event)" [(ngModel)]="newIncomeAmount" #amountInput>
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newIncomeComment"></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-        <div class="input-group mb-3" *ngIf="newIncomeAmount?.length > 0">
-            <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (focus)="focusAmountInput()">
-            <span class="input-group-text">PLN</span>
-            <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server"></textarea>
-            <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
-        </div>
-    </div>
-</div>
+<app-positions-form-popover
+    [positions]="dailyIncomes.positions" 
+    (positionAdded)="addIncome($event)"
+    (positionUpdated)="updateIncome($event)" 
+    (positionDeleted)="deleteIncome($event)">
+</app-positions-form-popover>
 
 <app-date-selector [year]="selectedYear" [month]="selectedMonth" (selectDate)="changeDate($event)"></app-date-selector>
 
@@ -41,9 +21,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let category of data">
+            <tr *ngFor="let category of incomesTable">
                 <td class="pt-0 pb-0">{{category.name}}</td>
-                <td *ngFor="let dailyExpense of category.dailyIncomes; let i = index" class="p-0 category-day" (click)="showEditIncomesPopup($event, category.id, i+1)" (mouseover)="showIncomesListPopup($event, category.id, i+1)">
+                <td *ngFor="let dailyExpense of category.dailyIncomes; let i = index" class="p-0 category-day" (click)="showIncomesFormPopup($event, category.id, i+1)" (mouseover)="showIncomesListPopup($event, category.id, i+1)">
                     <ng-container *ngIf="dailyExpense > 0">
                         {{dailyExpense}}
                     </ng-container>
@@ -57,7 +37,7 @@
                         {{sum}}
                     </ng-container>
                 </th>
-                <th class="p-0 table-danger">{{totalSummary}}</th>
+                <th class="p-0 table-danger">{{monthlySummary}}</th>
             </tr>
         </tbody>
     </table>

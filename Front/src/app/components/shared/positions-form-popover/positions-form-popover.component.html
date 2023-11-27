@@ -1,15 +1,15 @@
 <div [ngClass]="!settings!.isVisible ? 'hidden' : ''" id="edit-expenses-popup"  [style]="'left:' + settings!.xOffset + 'px; top:' + settings!.yOffset + 'px'" >
   <div>
       <div *ngFor="let pos of positions; let i = index" class="input-group mb-1">
-          <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="pos.amount" (blur)="updateExpenseAmount($event, pos)">
+          <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" [value]="pos.amount" (blur)="updatePositionAmount($event, pos)">
           <span class="input-group-text">PLN</span>
-          <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="pos.comment" (blur)="updateExpenseComment($event, pos)" autofocus></textarea>
+          <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [value]="pos.comment" (blur)="updatePositionComment($event, pos)" autofocus></textarea>
           <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
       </div>
       <div class="input-group mb-1">
-          <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addExpense($event)" [(ngModel)]="newExpenseAmount" #amountInput>
+          <input type="text" class="form-control" placeholder="Kwota" aria-label="Username" (blur)="addPosition($event)" [(ngModel)]="newPositionAmount" #amountInput>
           <span class="input-group-text">PLN</span>
-          <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newExpenseComment" [disabled]="newExpenseAmount == null"></textarea>
+          <textarea type="text" class="form-control" placeholder="Komentarz" aria-label="Server" [(ngModel)]="newPositionComment" [disabled]="newPositionAmount == null"></textarea>
           <button class="btn btn-outline-danger"><i class="bi bi-dash"></i></button>
       </div>
       <!-- <div class="input-group mb-3" *ngIf="newExpenseAmount?.length > 0">

@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { PositionsPopoverService } from '../../services/positions-popover.service';
 import { IncomesService } from '../../services/incomes.service';
 import { Income } from '../../types/income.type';
 import { IncomeTableCategory } from 'src/app/types/income-table-category.type';
+import { DailyPositions } from 'src/app/types/selected-positions.type';
 
 @Component({
   selector: 'app-incomes',
@@ -14,55 +14,33 @@ export class IncomesComponent {
 
   @ViewChild('amountInput', {static: false}) amountInputRef?: ElementRef;
 
-  amountInputFocused: boolean = false;
+  incomesTable?: IncomeTableCategory[];
+  dailySummary?: number[];
+  monthlySummary?: number;
+
+  dailyIncomes: DailyPositions = new DailyPositions;
 
   date = new Date()
   selectedYear: number = this.date.getFullYear();
-  selectedMonth: number = this.date.getMonth() + 1 ;
+  selectedMonth: number = this.date.getMonth() + 1;
+  numberOfDays = this.daysInMonth(this.selectedYear, this.selectedMonth);
+  days = Array.from({length: this.numberOfDays}, (_, index) => index + 1);
 
-  numberOfDays = 30;
-  days = Array.from({ length: this.numberOfDays }, (_, index) => index + 1);
-  incomesForm: FormGroup;
+  constructor(private popoverService: PositionsPopoverService, private incomesService: IncomesService) {
+    
+    this.incomesService.getIncomes()
+      .subscribe(data => {
+        this.prepareData(data);
+        this.incomesTable = data
+      });
 
-  selectedDayExpenses?: Income[];
-
-  selectedCategoryId: any;
-  selectedDay: any;
-  newIncomeAmount: any;
-  newIncomeComment: any
-  savingIncomeId?: string;
-
-  data?: IncomeTableCategory[];
-  dailySummary?: number[];
-  totalSummary?: number;
-
-  isIncomesListPopupVisible: boolean = false;
-  incomesListPopupXOffset: number = 0;
-  incomesListPopupYOffset: number = 0;
-
-  isEditIncomesPopupVisible: boolean = false;
-  editIncomesPopupXOffset: number = 0;
-  editIncomesPopupYOffset: number = 0;
-
-  constructor(private utilitiesService: PositionsPopoverService, private incomesService: IncomesService) {
-    //safesub
-    this.utilitiesService.getIsIncomesPopoverVisible().subscribe(isVisible => this.isEditIncomesPopupVisible = isVisible);
-
-    this.incomesService.getIncomes().subscribe(data => {
-      this.prepareData(data);
-      this.data = data
-    });
-    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth);
-
-    this.incomesForm = new FormGroup({
-      amount: new FormControl(''),
-      comment: new FormControl('')
-    });
+    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth)
+      .subscribe();
   }
 
   prepareData(data: IncomeTableCategory[]) {
     this.dailySummary = Array(this.numberOfDays).fill(0);
-    this.totalSummary = 0;
+    this.monthlySummary = 0;
 
     for (const category of data) {
       category.dailyIncomes = Array(this.numberOfDays).fill(0);
@@ -70,103 +48,75 @@ export class IncomesComponent {
         const index = new Date(income.date).getDate() - 1
         category.dailyIncomes[index] += income.amount;
         this.dailySummary[index] += income.amount;
-        this.totalSummary += income.amount;
+        this.monthlySummary += income.amount;
       }
     }
 
-    if (this.selectedCategoryId && this.selectedDay) {
-      this.selectedDayExpenses = this.getIncomesForDay(this.selectedCategoryId, this.selectedDay);
-      this.newIncomeAmount = null;
-      this.newIncomeComment = null;
+    if (this.dailyIncomes.areParamsSet()) {
+      this.dailyIncomes.positions = this.getIncomesForDay();
     }
   }
 
-  ngAfterViewChecked() { // poprawić 
-    if (this.amountInputFocused && this.amountInputRef) {
-      this.amountInputRef.nativeElement.focus();
-      this.amountInputFocused = false;
-    } 
+  daysInMonth(year: number, month: number) {
+    return new Date(year, month, 0).getDate();
   }
 
   changeDate(date: any) {
     this.selectedYear = date.year;
     this.selectedMonth = date.month;
-    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth);
+    this.numberOfDays = this.daysInMonth(this.selectedYear, this.selectedMonth);
+
+    this.incomesService.refreshIncomes(this.selectedYear, this.selectedMonth)
+      .subscribe(() => {
+        this.days = Array.from({length: this.numberOfDays}, (_, index) => index + 1);
+      });
+  }
+
+  getCategory() {
+    return this.incomesTable!.find(x => x.id == this.dailyIncomes.categoryId!);
+  }
+
+  getIncomesForDay() {
+    return this.getCategory()?.incomes.filter(x => new Date(x.date).getDate() == this.dailyIncomes.day);
+  }
+
+  showIncomesListPopup(event: any, categoryId: string, day: number) {
+    
+    this.dailyIncomes.categoryId = categoryId;
+    this.dailyIncomes.day = day;
+    let incomes = this.getIncomesForDay();
+    
+    if (incomes!.length == 0) {
+      this.popoverService.setListPopoverSettings({isVisible: false});
+      return;
+    }
+
+    this.dailyIncomes.positions = incomes;
+   
+    this.popoverService.setFormPopoverSettings({isVisible: false, xOffset: event.clientX, yOffset: event.clientY});
+    this.popoverService.setListPopoverSettings({isVisible: true, xOffset: event.clientX, yOffset: event.clientY});
+  }
+
+
+  showIncomesFormPopup(event: any, categoryId: string, day: number) {
+    this.popoverService.setFormPopoverSettings({isVisible: true, xOffset: event.clientX, yOffset: event.clientY});
+    this.popoverService.setListPopoverSettings({isVisible: false, xOffset: event.clientX, yOffset: event.clientY});
+  }
+
+  addIncome(amount: number) {
+    const date = new Date(this.selectedYear, this.selectedMonth - 1, this.dailyIncomes.day);
+    this.incomesService.addIncome(this.dailyIncomes.categoryId!, amount, date).subscribe();
+  }
+
+  deleteIncome(id: string) {
+    this.incomesService.deleteIncome(id);
+  }
+
+  updateIncome(income: Income) {
+    this.incomesService.updateIncome(income);
   }
 
   sum(arr: number[]) {
     return arr.reduce((a, b) => a + b);
-  }
-
-  getCategory(categoryId: string) {
-    return this.data!.find(x => x.id == categoryId);
-  }
-
-  getIncomesForDay(categoryId: string, day: number) {
-    return this.getCategory(categoryId)?.incomes.filter(x => new Date(x.date).getDate() == day);
-  }
-
-  showIncomesListPopup(event: any, categoryId: string, day: number) {
-    let expenses = this.getIncomesForDay(categoryId, day);
-
-    if (expenses!.length == 0) {
-      this.isIncomesListPopupVisible = false;
-      return;
-    }
-
-    this.newIncomeAmount = null;
-    this.newIncomeComment = null;
-
-    this.selectedCategoryId = categoryId;
-    this.selectedDay = day;
-    this.selectedDayExpenses = expenses;
-
-    this.isIncomesListPopupVisible = true;
-    this.incomesListPopupXOffset = event.clientX;
-    this.incomesListPopupYOffset = event.clientY;
-
-    this.isEditIncomesPopupVisible = false;
-  }
-
-  showPopup() {
-    this.isEditIncomesPopupVisible = true;
-    this.editIncomesPopupXOffset = this.incomesListPopupXOffset;
-    this.editIncomesPopupYOffset = this.incomesListPopupYOffset;
-
-    this.isIncomesListPopupVisible = false;
-  }
-
-  showEditIncomesPopup(event: any, categoryId: string, day: number) {
-    this.newIncomeAmount = null;
-    this.newIncomeComment = null;
-
-    this.selectedCategoryId = categoryId;
-    this.selectedDay = day;
-    this.selectedDayExpenses = this.getIncomesForDay(categoryId, day);
-
-    this.isEditIncomesPopupVisible = true;
-    this.editIncomesPopupXOffset = event.clientX;
-    this.editIncomesPopupYOffset = event.clientY;
-
-    this.isIncomesListPopupVisible = false;
-  }
-
-  addIncome(event: any) {
-    const date = new Date();
-    date.setDate(this.selectedDay)
-    this.incomesService.addIncome(this.selectedCategoryId!, event.target.value, date);
-  }
-
-  updateIncomeAmount(event: any, income: Income) {
-    this.incomesService.updateIncome(income.id, event.target.value, income.comment);
-  }
-
-  updateIncomeComment(event: any, income: Income) {
-    this.incomesService.updateIncome(income.id, income.amount, event.target.value);
-  }
-
-  focusAmountInput() {
-    console.log("amount-focus")
-    this.amountInputFocused = true;
   }
 }

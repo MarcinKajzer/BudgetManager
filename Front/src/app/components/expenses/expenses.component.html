@@ -4,9 +4,9 @@
 
 <app-positions-form-popover
     [positions]="dailyExpenses.positions" 
-    (expenseAdded)="addExpense($event)"
-    (expenseUpdated)="updateExpense($event)" 
-    (expenseDeleted)="deleteExpense($event)">
+    (positionAdded)="addExpense($event)"
+    (positionUpdated)="updateExpense($event)" 
+    (positionDeleted)="deleteExpense($event)">
 </app-positions-form-popover>
 
 <app-date-selector 

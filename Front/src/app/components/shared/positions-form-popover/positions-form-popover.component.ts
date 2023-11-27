@@ -13,12 +13,12 @@ export class PositionsFormPopoverComponent {
 
   @Input() positions?: any[]; //TO DO: change type
 
-  @Output() expenseAdded = new EventEmitter<number>();
-  @Output() expenseDeleted = new EventEmitter<string>();
-  @Output() expenseUpdated = new EventEmitter<Expense>();
+  @Output() positionAdded = new EventEmitter<number>();
+  @Output() positionDeleted = new EventEmitter<string>();
+  @Output() positionUpdated = new EventEmitter<any>(); //TO DO: change type
 
-  newExpenseAmount?: string;
-  newExpenseComment?: string;
+  newPositionAmount?: string;
+  newPositionComment?: string;
   
   settings?: PopoverSettings = {isVisible: false, xOffset: 0, yOffset: 0}
 
@@ -29,30 +29,30 @@ export class PositionsFormPopoverComponent {
       });  
   }
 
-  addExpense(event: any): void {
+  addPosition(event: any): void {
     if (event.target.value == "") {
       return
     }
 
-    this.expenseAdded.emit(+event.target.value);
-    this.newExpenseAmount = undefined;
+    this.positionAdded.emit(+event.target.value);
+    this.newPositionAmount = undefined;
   }
 
-  deleteExpense(id: string): void {
-    this.expenseDeleted.emit(id);
+  deletePosition(id: string): void {
+    this.positionDeleted.emit(id);
   }
 
-  updateExpenseAmount(event: any, expense: Expense): void {
-    if (event.target.value != expense.amount && event.target.value.trim() != "") {
-      expense.amount = +event.target.value;
-      this.expenseUpdated.emit(expense);
+  updatePositionAmount(event: any, position: any): void { //TO DO: change type
+    if (event.target.value != position.amount && event.target.value.trim() != "") {
+      position.amount = +event.target.value;
+      this.positionUpdated.emit(position);
     }
   }
 
-  updateExpenseComment(event: any, expense: Expense): void {
-    if (event.target.value != expense.comment) {
-      expense.comment = event.target.value;
-      this.expenseUpdated.emit(expense);
+  updatePositionComment(event: any, position: any): void { //TO DO: change type
+    if (event.target.value != position.comment) {
+      position.comment = event.target.value;
+      this.positionUpdated.emit(position);
     }
   }
 }
