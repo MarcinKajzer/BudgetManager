@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { PositionsPopoverService } from 'src/app/services/positions-popover.service';
-import { Expense } from 'src/app/types/expense.type';
-import { Income } from 'src/app/types/income.type';
 import { PopoverSettings } from 'src/app/types/popover-settings.type';
 
 @Component({
@@ -11,7 +9,7 @@ import { PopoverSettings } from 'src/app/types/popover-settings.type';
 })
 export class PositionsListPopoverComponent {
   
-  @Input() positions?: Expense[] | Income[];
+  @Input() positions?: any[]; //TO DO: change type
 
   settings?: PopoverSettings = {isVisible: false, xOffset: 0, yOffset: 0}
 
@@ -23,6 +21,7 @@ export class PositionsListPopoverComponent {
   }
 
   showPositionsFormPopover() {
-    this.popoverService.setListPopoversettings({isVisible: true})
+    this.popoverService.setFormPopoverSettings({isVisible: true});
+    this.popoverService.setListPopoverSettings({isVisible: false});
   }
 }

@@ -16,14 +16,28 @@ export class AppComponent {
     if (event.target.closest('#expenses-list-popup') == null && 
       !event.target.classList.contains("category-day") && 
       event.target.closest("#edit-expenses-popup") == null) {
-      this.utilitiesService.setFormPopoversettings({isVisible: false})
+      this.utilitiesService.setFormPopoverSettings({isVisible: false})
     }
 
-    if (event.target.closest('#incomes-list-popup') == null && 
-      !event.target.classList.contains("category-day") && 
-      event.target.closest("#edit-incomes-popup") == null) {
-      this.utilitiesService.setIsIncomesPopoverVisible(false);
+    // if (event.target.closest('#incomes-list-popup') == null && 
+    //   !event.target.classList.contains("category-day") && 
+    //   event.target.closest("#edit-incomes-popup") == null) {
+    //   this.utilitiesService.setIsIncomesPopoverVisible(false);
+    // }
+  }
+
+  @HostListener('document:mouseover', ['$event'])
+  documentMouseover(event: any): void {
+    if (event.target.closest('#expenses-list-popup') == null && 
+      !event.target.classList.contains("category-day")) {
+      this.utilitiesService.setListPopoverSettings({isVisible: false})
     }
+
+    // if (event.target.closest('#incomes-list-popup') == null && 
+    //   !event.target.classList.contains("category-day") && 
+    //   event.target.closest("#edit-incomes-popup") == null) {
+    //   this.utilitiesService.setIsIncomesPopoverVisible(false);
+    // }
   }
 
   constructor(private utilitiesService: PositionsPopoverService, private authService: AuthService) {

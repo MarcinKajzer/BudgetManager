@@ -54,7 +54,7 @@ export class ExpensesService {
       )  
   }
 
-  deleteExpense(id: number) {
+  deleteExpense(id: string) {
     
   }
 

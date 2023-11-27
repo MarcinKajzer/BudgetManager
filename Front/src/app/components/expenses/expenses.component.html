@@ -1,15 +1,19 @@
 <app-positions-list-popover
-    [positions]="selectedDailyPositions.positions">
+    [positions]="dailyExpenses.positions">
 </app-positions-list-popover>
 
 <app-positions-form-popover
-    [positions]="selectedDailyPositions.positions" 
+    [positions]="dailyExpenses.positions" 
     (expenseAdded)="addExpense($event)"
     (expenseUpdated)="updateExpense($event)" 
     (expenseDeleted)="deleteExpense($event)">
 </app-positions-form-popover>
 
-<app-date-selector [year]="selectedYear" [month]="selectedMonth" (selectDate)="changeDate($event)"></app-date-selector>
+<app-date-selector 
+    [year]="selectedYear" 
+    [month]="selectedMonth" 
+    (selectDate)="changeDate($event)">
+</app-date-selector>
 
 <div class="table-responsive">
     <table class="table table-bordered">

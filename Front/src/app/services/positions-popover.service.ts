@@ -28,7 +28,7 @@ export class PositionsPopoverService {
         return this.formPopoverSettings as Observable<PopoverSettings>;
     }
 
-    setFormPopoversettings(settings: PopoverSettings): void {
+    setFormPopoverSettings(settings: PopoverSettings): void {
         this.formPopoverSettings.next(settings);
     }
 
@@ -37,7 +37,7 @@ export class PositionsPopoverService {
         return this.listPopoverSettings as Observable<PopoverSettings>;
     }
 
-    setListPopoversettings(settings: PopoverSettings): void {
+    setListPopoverSettings(settings: PopoverSettings): void {
         this.listPopoverSettings.next(settings);
     }
 }

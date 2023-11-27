@@ -11,10 +11,10 @@ import { PopoverSettings } from 'src/app/types/popover-settings.type';
 })
 export class PositionsFormPopoverComponent {
 
-  @Input() positions?: Expense[] | Income[];
+  @Input() positions?: any[]; //TO DO: change type
 
   @Output() expenseAdded = new EventEmitter<number>();
-  @Output() expenseDeleted = new EventEmitter<number>();
+  @Output() expenseDeleted = new EventEmitter<string>();
   @Output() expenseUpdated = new EventEmitter<Expense>();
 
   newExpenseAmount?: string;
@@ -38,7 +38,7 @@ export class PositionsFormPopoverComponent {
     this.newExpenseAmount = undefined;
   }
 
-  deleteExpense(id: number): void {
+  deleteExpense(id: string): void {
     this.expenseDeleted.emit(id);
   }
 
